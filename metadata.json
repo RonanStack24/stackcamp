@@ -1,0 +1,6 @@
+{
+  "name": "Stackcamp",
+  "description": "A cozy digital camp for developers and builders to escape the noise, enjoy the craft of coding, and connect with other builders.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

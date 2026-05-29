@@ -1,0 +1,200 @@
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Flame, Compass, Calendar, ArrowDown, Sparkles } from "lucide-react";
+import { PixelFoxLogo } from "./Navbar";
+
+interface HeroProps {
+  onExploreClick: () => void;
+  onComingSoonClick: () => void;
+}
+
+interface Ember {
+  id: number;
+  left: number;
+  size: number;
+  delay: number;
+  duration: number;
+}
+
+export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
+  const [embers, setEmbers] = useState<Ember[]>([]);
+  const [typedText, setTypedText] = useState("");
+  const DialogText = "Welcome to Stackcamp! 🦊 Leave the social media noise behind and check into a low-stress woodland campsite with other independent builders. Grab some cocoa!";
+
+  useEffect(() => {
+    // Generate a set of retro blocky ember particles that drift up
+    const newEmbers = Array.from({ length: 20 }).map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      size: Math.random() * 6 + 4, // 4px to 10px (blocky pixels!)
+      delay: Math.random() * 5,
+      duration: Math.random() * 7 + 5,
+    }));
+    setEmbers(newEmbers);
+
+    // Simple retro RPG typewriter animation
+    let i = 0;
+    const typingInterval = setInterval(() => {
+      setTypedText(DialogText.slice(0, i));
+      i++;
+      if (i > DialogText.length) {
+        clearInterval(typingInterval);
+      }
+    }, 28);
+
+    return () => clearInterval(typingInterval);
+  }, []);
+
+  return (
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 bg-transparent"
+    >
+      {/* 8-bit Scanline Overlay for retro monitor appearance */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.14] select-none z-10" 
+        style={{
+          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.8) 50%, rgba(255, 255, 255, 0.1) 50%)",
+          backgroundSize: "100% 4px",
+        }}
+      />
+      
+      {/* Ambient vignetting and blocky edge grid */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0e1510] via-transparent to-black/40 pointer-events-none z-10" />
+
+      {/* Retro Floating Pixel Embers */}
+      <div id="hero-embers" className="absolute inset-x-0 bottom-0 top-1/3 overflow-hidden pointer-events-none z-10">
+        {embers.map((ember) => (
+          <motion.div
+            id={`ember-${ember.id}`}
+            key={ember.id}
+            initial={{ y: "100%", x: 0, opacity: 0 }}
+            animate={{
+              y: "-110%",
+              x: [0, Math.sin(ember.id) * 40, Math.sin(ember.id) * -20],
+              opacity: [0, 1, 0.8, 0],
+            }}
+            transition={{
+              duration: ember.duration,
+              repeat: Infinity,
+              delay: ember.delay,
+              ease: "linear",
+            }}
+            className="absolute bg-amber-orange border border-black shadow-[0_0_10px_rgba(234,127,67,0.5)]"
+            style={{
+              left: `${ember.left}%`,
+              width: `${ember.size}px`,
+              height: `${ember.size}px`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Main Content Container */}
+      <div className="relative z-20 max-w-4xl mx-auto px-6 text-center mt-12 md:mt-16">
+        
+        {/* Rounded Retro Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-3 px-4 py-2 bg-logo-brown border-2 border-black retro-shadow-sm text-[#eadec9] text-xs font-mono mb-8"
+        >
+          <span className="w-2.5 h-2.5 bg-amber-orange border border-black animate-pulse" />
+          <span className="text-[10px] tracking-wide font-pixel text-cream select-none">FOUNDED BY:</span>
+          <span className="text-amber-orange font-bold text-xs">RonanStack24</span>
+        </motion.div>
+
+        {/* Brand Name using VT323 for giant beautiful pixel stamp */}
+        <motion.h1
+          id="hero-title"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="font-display text-7xl sm:text-9xl md:text-[10rem] font-bold tracking-tight text-amber-orange leading-none select-none pixel-text-shadow mb-4"
+        >
+          Stackcamp
+        </motion.h1>
+
+        {/* Retro Dialog box from our Cute Logo Fox Mascot Speaking */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="pixel-border border-black bg-cocoa-900 retro-shadow p-5 max-w-2xl mx-auto mb-10 text-left relative overflow-hidden flex flex-col sm:flex-row gap-4 items-center sm:items-start"
+        >
+          {/* Avatar frame */}
+          <div className="w-16 h-16 bg-logo-brown border-2 border-black retro-shadow-sm flex-shrink-0 flex items-center justify-center p-1.5 rounded relative">
+            <PixelFoxLogo />
+            {/* Tiny retro name label below avatar */}
+            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-black px-1 text-[8px] text-amber-orange font-pixel tracking-tighter">
+              MOCHI
+            </span>
+          </div>
+
+          {/* dialogue balloon with typed effect */}
+          <div className="space-y-1.5 flex-1 w-full text-center sm:text-left">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-pixel text-amber-orange leading-none uppercase">
+                System Guide • Camper Companion
+              </span>
+              <span className="text-[10px] text-warm-beige/60 font-mono hidden sm:inline">
+                A1-CAMP-BOT
+              </span>
+            </div>
+            
+            <p className="text-sm md:text-base leading-relaxed text-warm-beige font-mono whitespace-pre-wrap select-none min-h-[60px]">
+              {typedText}
+              <span className="inline-block w-2.5 h-4 bg-amber-orange ml-1 animate-pulse" />
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Cozy Slogan details */}
+        <motion.p
+          id="hero-subtitle"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-lg md:text-xl text-sage-text leading-relaxed max-w-xl mx-auto font-mono mb-10"
+        >
+          No hustle indicators, no trending tabs, just pure code craft and a quiet campfire clearing.
+        </motion.p>
+
+        {/* Action Buttons styled like retro RPG buttons */}
+        <motion.div
+          id="hero-actions"
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-6"
+        >
+          <button
+            id="cta-explore"
+            onClick={onExploreClick}
+            className="group w-full sm:w-auto font-pixel text-[11px] tracking-wider px-6 py-4 bg-cocoa-800 hover:bg-cocoa-700 text-warm-beige font-semibold pixel-border retro-shadow transition-all active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center justify-center gap-3 cursor-pointer focus:outline-none"
+          >
+            <Compass className="w-4 h-4 text-emerald-400 group-hover:rotate-45 transition-transform duration-300" />
+            Inspect clearing
+          </button>
+          
+          <button
+            id="cta-soon"
+            onClick={onComingSoonClick}
+            className="w-full sm:w-auto font-pixel text-[11px] tracking-wider px-6 py-4 bg-amber-orange hover:bg-[#ffa16c] text-cocoa-950 font-bold pixel-border retro-shadow transition-all active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center justify-center gap-3 cursor-pointer focus:outline-none"
+          >
+            <Flame className="w-4 h-4 text-cocoa-900" />
+            Explore sandbox
+          </button>
+        </motion.div>
+
+        {/* Down Bounce Indicator */}
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-sage-text opacity-70 hidden md:flex cursor-pointer"
+          onClick={onExploreClick}
+        >
+          <span className="font-pixel text-[9px] uppercase tracking-wider text-amber-orange">Move Downstairs</span>
+          <ArrowDown className="w-4 h-4 text-amber-orange" />
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}

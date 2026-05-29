@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-pixel: "Press Start 2P", display, sans-serif;
+  --font-display: "VT323", monospace, serif;
+  
+  --color-forest-950: var(--theme-forest-950);
+  --color-forest-900: var(--theme-forest-900);
+  --color-forest-800: var(--theme-forest-800);
+  --color-forest-700: var(--theme-forest-700);
+  --color-cocoa-950: var(--theme-cocoa-950);
+  --color-cocoa-900: var(--theme-cocoa-900);
+  --color-cocoa-800: var(--theme-cocoa-800);
+  --color-cocoa-700: var(--theme-cocoa-700);
+  --color-amber-orange: var(--theme-amber-orange);
+  --color-warm-beige: var(--theme-warm-beige);
+  --color-logo-brown: var(--theme-logo-brown);
+}
+
+:root {
+  --theme-forest-950: #0e1510;
+  --theme-forest-900: #1a271d;
+  --theme-forest-800: #2c402e;
+  --theme-forest-700: #3c543f;
+  --theme-cocoa-950: #180d0b;
+  --theme-cocoa-900: #211412;
+  --theme-cocoa-800: #2d1e1b;
+  --theme-cocoa-700: #3f2c28;
+  --theme-amber-orange: #ea7f43;
+  --theme-warm-beige: #eadec9;
+  --theme-logo-brown: #2d1c18;
+  
+  --bg-primary: #0e1510;
+  --text-primary: #eadec9;
+}
+
+:root[data-theme="light"] {
+  --theme-forest-950: #fff5f8;
+  --theme-forest-900: #ffebf0;
+  --theme-forest-800: #ffccd8;
+  --theme-forest-700: #ffa3b8;
+  --theme-cocoa-950: #fffcf8;
+  --theme-cocoa-900: #fbf5ef;
+  --theme-cocoa-800: #f2e6dc;
+  --theme-cocoa-700: #e3ccb8;
+  --theme-amber-orange: #ff9eaf;
+  --theme-warm-beige: #5c433b;
+  --theme-logo-brown: #5c433b;
+  
+  --bg-primary: #fff5f8;
+  --text-primary: #5c433b;
+}
+
+/* Retro Pixel Shadow Styling (The 8-bit blocky shadow look!) */
+.retro-shadow-sm {
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+.retro-shadow {
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+.retro-shadow-orange {
+  box-shadow: 4px 4px 0px 0px var(--color-amber-orange);
+}
+.retro-shadow-lg {
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+.retro-glow-orange {
+  box-shadow: 0 0 40px 10px rgba(234, 127, 67, 0.25);
+}
+
+/* Pixel Border Utility (Simulating the blocky double border of nesting boxes) */
+.pixel-border-sm {
+  border: 2px solid #000000;
+}
+.pixel-border {
+  border: 4px solid #000000;
+}
+.pixel-border-orange {
+  border: 4px solid var(--color-amber-orange);
+}
+.pixel-border-double {
+  border: 6px double #000000;
+}
+
+/* Corner cuts/pixel corners styled nicely */
+.pixel-corners {
+  image-rendering: pixelated;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cocoa-950);
+  border-left: 4px solid #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-cocoa-800);
+  border: 3px solid var(--color-cocoa-950);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-amber-orange);
+}
+
+/* Font Smoothing for crisp retro rendering */
+.crisp-pixel {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary); /* Dynamic based on theme */
+  color: var(--text-primary); /* Dynamic based on theme */
+  font-family: "JetBrains Mono", monospace;
+  overflow-x: hidden;
+  transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out;
+}
+
+/* Retro text stroke */
+.pixel-text-shadow {
+  text-shadow: 2px 2px 0px #000000;
+}
+
+.pixel-text-shadow-orange {
+  text-shadow: 2px 2px 0px var(--color-amber-orange);
+}
+
+@keyframes pixel-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
+}
+
+.pixel-bob {
+  animation: pixel-float 3s ease-in-out infinite;
+}
