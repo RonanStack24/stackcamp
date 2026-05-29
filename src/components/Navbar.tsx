@@ -124,10 +124,14 @@ export default function Navbar({ onJoinClick }: NavbarProps) {
 
   const scrollToSection = (id: string) => {
     setIsMobileMenuOpen(false);
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    // Add a slight delay to allow the mobile menu close animation to finish
+    // so the browser's smooth scroll doesn't get interrupted or miscalculated.
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 250);
   };
 
   const navItems = [

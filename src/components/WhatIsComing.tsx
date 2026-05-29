@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Contact, 
@@ -17,39 +17,58 @@ import { DeveloperBadge, GuestbookEntry } from "../types";
 export default function WhatIsComing() {
   const [activeTab, setActiveTab] = useState<string>("profiles");
 
+  // Word rotator state
+  const roles = [
+    "developers.",
+    "engineers.",
+    "architects.",
+    "builders.",
+    "creators.",
+    "students.",
+    "innovators."
+  ];
+  const [roleIndex, setRoleIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, []);
+
   // Local states for interactive simulators
   // 1. Badge Generator State
   const [badgeName, setBadgeName] = useState("RonanStack24");
-  const [badgeRole, setBadgeRole] = useState("C# Developer");
+  const [badgeRole, setBadgeRole] = useState("developers");
   const [badgeSkills, setBadgeSkills] = useState(["ASP.NET Core", "C#", "UI Design"]);
   const [newSkill, setNewSkill] = useState("");
   const [badgeCharacter, setBadgeCharacter] = useState("🦊"); // default to our logo fox!
 
   // 2. Project Showcases State
   const [projects, setProjects] = useState([
-    { id: "1", title: "PineOS Retro Sim", developer: "ElderPine", fuelCount: 42, tag: "C#" },
-    { id: "2", title: "Woodland Editor", developer: "HazelSprout", fuelCount: 29, tag: "React" },
-    { id: "3", title: "Cozy Soundscapes", developer: "RangerDan", fuelCount: 56, tag: "Web Audio" },
+    { id: "1", title: "Sustainable Living Mod", developer: "ElderPine", fuelCount: 42, tag: "Architect" },
+    { id: "2", title: "Woodland UI Engine", developer: "HazelSprout", fuelCount: 29, tag: "Engineer" },
+    { id: "3", title: "Student Capstone App", developer: "RangerDan", fuelCount: 56, tag: "Student" },
   ]);
 
   // 3. Collaboration board status
   const [collabMatches, setCollabMatches] = useState([
-    { id: "c1", title: "Looking for UI designer for indie life-sim", sender: "MossGazer", role: "C# Ninja" },
-    { id: "c2", title: "Need a beta-tester for my terminal clock app", sender: "FiraCoder", role: "Rust Shaman" },
+    { id: "c1", title: "Looking for structural feedback on 3D housing model", sender: "MossGazer", role: "Architect" },
+    { id: "c2", title: "Need student beta-testers for a new study tool", sender: "FiraCoder", role: "Innovator" },
   ]);
   const [newCollabRequest, setNewCollabRequest] = useState("");
   const [newCollabSender, setNewCollabSender] = useState("");
 
   // 4. Build Logs timeline status
   const [buildLogs, setBuildLogs] = useState([
-    { id: "b1", camper: "RonanStack24", mood: "🔥 Fired up", text: "Successfully finished the Stackcamp responsive structures. Tailwind is flawless.", time: "Just now" },
-    { id: "b2", camper: "PixelPioneer", mood: "☕ Coding in peace", text: "Working on customizable pixel profile cards. Exploring canvas rendering.", time: "10 mins ago" },
+    { id: "b1", camper: "RonanStack24", mood: "🔥 Fired up", text: "Successfully finished the Stackcamp layout. The community features are coming together.", time: "Just now" },
+    { id: "b2", camper: "PixelPioneer", mood: "☕ Cozy Code", text: "Working on customizable pixel profile cards for all creators.", time: "10 mins ago" },
   ]);
   const [newLogText, setNewLogText] = useState("");
   const [newLogMood, setNewLogMood] = useState("🔥 Fired up");
 
   // 5. Community cabins joined
-  const [joinedCabins, setJoinedCabins] = useState<string[]>(["Pine Woods Cabin"]);
+  const [joinedCabins, setJoinedCabins] = useState<string[]>(["Creators Studio"]);
 
   const handleAddSkill = (e: FormEvent) => {
     e.preventDefault();
@@ -167,8 +186,22 @@ export default function WhatIsComing() {
           <span className="font-pixel text-[11px] tracking-wider uppercase text-amber-orange block">
             🎮 INTRODUCING THE OUTPOST DISTRICTS
           </span>
-          <h2 className="font-display text-5xl md:text-6xl font-bold tracking-tight text-warm-beige">
-            Upcoming Camp Districts
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-warm-beige leading-tight min-h-[140px] md:min-h-[110px]">
+            Stackcamp is a cozy digital camp for
+            <span className="block text-amber-orange mt-2">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={roleIndex}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="inline-block"
+                >
+                  {roles[roleIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </span>
           </h2>
           <p className="text-sage-text leading-relaxed font-mono">
             Our cozy virtual map is constantly expanding. Click one of the campfire districts below to try its interactive client-side simulator sandbox.
@@ -220,8 +253,8 @@ export default function WhatIsComing() {
           </div>
 
           {/* Right interactive gameboy console simulator (6 cols) */}
-          <div id="vision-sandbox-col" className="lg:col-span-6 flex items-stretch">
-            <div className="w-full bg-logo-brown border-4 border-black p-6 flex flex-col justify-between relative overflow-hidden backdrop-blur-sm self-stretch min-h-[550px] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <div id="vision-sandbox-col" className="lg:col-span-6 flex items-stretch px-1 sm:px-0">
+            <div className="w-full bg-logo-brown border-4 border-black p-4 sm:p-6 flex flex-col justify-between relative overflow-hidden backdrop-blur-sm self-stretch min-h-[550px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
               
               {/* Retro console venting slots decorative */}
               <div className="absolute top-3 right-6 flex gap-1 pointer-events-none opacity-40">
@@ -279,11 +312,13 @@ export default function WhatIsComing() {
                             onChange={(e) => setBadgeRole(e.target.value)}
                             className="w-full bg-cocoa-950 border-2 border-black focus:border-amber-orange text-sm p-2 text-warm-beige outline-none cursor-pointer"
                           >
-                            <option value="C# Developer">C# Developer</option>
-                            <option value="Indie Game Dev">Indie Game Dev</option>
-                            <option value="UI/UX Artisan">UI/UX Artisan</option>
-                            <option value="React Ranger">React Ranger</option>
-                            <option value="Rust Tinker">Rust Tinker</option>
+                            <option value="developers">developers</option>
+                            <option value="engineers">engineers</option>
+                            <option value="architects">architects</option>
+                            <option value="builders">builders</option>
+                            <option value="creators">creators</option>
+                            <option value="students">students</option>
+                            <option value="innovators">innovators</option>
                           </select>
                         </div>
                       </div>
@@ -307,8 +342,8 @@ export default function WhatIsComing() {
                       </div>
 
                       {/* Passport Preview card styled uniquely */}
-                      <div className="border-4 border-dashed border-black/40 p-4 flex justify-center bg-black/30">
-                        <div className="relative w-72 bg-cocoa-950 border-4 border-amber-orange p-4 overflow-hidden shadow-2xl font-mono text-xs">
+                      <div className="border-4 border-dashed border-black/40 p-2 sm:p-4 flex justify-center bg-black/30">
+                        <div className="relative w-full max-w-[288px] bg-cocoa-950 border-4 border-amber-orange p-3 sm:p-4 overflow-hidden shadow-2xl font-mono text-xs">
                           {/* Top heading strip inside passport */}
                           <div className="absolute top-0 right-0 bg-amber-orange text-cocoa-950 text-[8px] px-2.5 py-1 font-pixel font-bold uppercase">
                             STCamp-PASS
@@ -436,11 +471,11 @@ export default function WhatIsComing() {
                           />
                           <p className="text-[10px] text-amber-orange font-pixel self-center text-right uppercase">POST BOARD</p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <input
                             type="text"
                             required
-                            placeholder="C# / .NET project help card..."
+                            placeholder="I need help building..."
                             value={newCollabRequest}
                             onChange={(e) => setNewCollabRequest(e.target.value.slice(0, 50))}
                             className="bg-cocoa-950 border border-black focus:border-amber-orange p-2 text-xs text-warm-beige outline-none flex-grow"
@@ -483,7 +518,7 @@ export default function WhatIsComing() {
                         Document tiny wins and bugs squashed in your logs. Share authentic building processes.
                       </p>
 
-                      <form onSubmit={handlePostLog} className="flex gap-2 items-center font-mono">
+                      <form onSubmit={handlePostLog} className="flex flex-col sm:flex-row gap-2 sm:items-center font-mono">
                         <select
                           value={newLogMood}
                           onChange={(e) => setNewLogMood(e.target.value)}
@@ -542,10 +577,10 @@ export default function WhatIsComing() {
 
                       <div className="grid grid-cols-2 gap-2.5 font-mono">
                         {[
-                          { name: "C# Cabin Outpost", icon: "🌲", campers: 124 },
-                          { name: "React Clearing", icon: "⚛️", campers: 198 },
-                          { name: "Tailwind Outpost", icon: "🛶", campers: 88 },
-                          { name: "Low-Hustle Den", icon: "🦦", campers: 145 },
+                          { name: "Creators Studio", icon: "🎨", campers: 124 },
+                          { name: "Builders Workshop", icon: "🔨", campers: 198 },
+                          { name: "Innovators Den", icon: "💡", campers: 88 },
+                          { name: "Student Lounge", icon: "📚", campers: 145 },
                         ].map((cabin) => {
                           const isJoined = joinedCabins.includes(cabin.name);
                           return (

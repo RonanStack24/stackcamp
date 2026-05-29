@@ -11,7 +11,7 @@ interface JoinCampModalProps {
 export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [camperType, setCamperType] = useState("C# Craftsman");
+  const [camperType, setCamperType] = useState("Creators Studio");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
@@ -48,7 +48,7 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="relative w-full max-w-md bg-cocoa-900 border-4 border-black font-mono shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8 overflow-hidden z-20"
+            className="relative w-full max-w-md max-h-[95vh] overflow-y-auto bg-cocoa-900 border-4 border-black font-mono shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-5 md:p-8 z-20"
           >
             
             {/* Top Close Button styled as retro X button */}
@@ -75,10 +75,10 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
                         <PixelFoxLogo />
                       </div>
                       <div className="space-y-0.5">
-                        <span className="text-[10px] font-pixel tracking-widest uppercase text-amber-orange leading-none block">
+                        <span className="text-[9px] sm:text-[10px] font-pixel tracking-widest uppercase text-amber-orange leading-none block">
                           CAMPSITE GATEWAY
                         </span>
-                        <h3 className="font-display text-4xl font-bold text-warm-beige leading-none">
+                        <h3 className="font-display text-3xl sm:text-4xl font-bold text-warm-beige leading-none">
                           Register Entry
                         </h3>
                       </div>
@@ -124,10 +124,11 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
                         onChange={(e) => setCamperType(e.target.value)}
                         className="w-full bg-cocoa-950 border-2 border-black focus:border-amber-orange p-2.5 text-sm font-mono text-[#EADEC9] outline-none cursor-pointer"
                       >
-                        <option value="C# Craftsman">C# / .NET Outpost</option>
-                        <option value="React Wilderness Ranger">React Wilderness clearing</option>
-                        <option value="Low-Hustle Dev">Low-Hustle Indie Cabin</option>
-                        <option value="Enthusiastically Curious">General Woodland Camper</option>
+                        <option value="Creators Studio">Creators Studio</option>
+                        <option value="Builders Workshop">Builders Workshop</option>
+                        <option value="Innovators Den">Innovators Den</option>
+                        <option value="Student Lounge">Student Lounge</option>
+                        <option value="General Camper">General Woodland Camper</option>
                       </select>
                     </div>
 
@@ -161,7 +162,7 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="font-display text-4xl font-bold text-warm-beige">
+                    <h4 className="font-display text-3xl sm:text-4xl font-bold text-warm-beige">
                       Passport Valid!
                     </h4>
                     <p className="text-sm text-sage-text leading-relaxed max-w-xs mx-auto">

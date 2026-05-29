@@ -46,19 +46,19 @@ export default function Clearing() {
           </div>
 
           {/* Photo stacked card presentation side */}
-          <div id="clearing-image-col" className="lg:col-span-6 flex justify-center">
-            <div className="relative w-full max-w-md">
+          <div id="clearing-image-col" className="lg:col-span-6 flex justify-center px-2 sm:px-0">
+            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md mr-4 mb-4 md:mr-6 md:mb-6">
               {/* Back offset shadow card */}
               <div 
                 id="image-stack-shadow-card" 
-                className="absolute inset-0 bg-logo-brown border-4 border-black rounded translate-x-4 translate-y-4 pointer-events-none" 
+                className="absolute inset-0 bg-logo-brown border-4 border-black rounded translate-x-3 translate-y-3 md:translate-x-4 md:translate-y-4 pointer-events-none" 
               />
               
               {/* Main content photograph card in pixel style frame */}
               <motion.div
                 id="image-stack-main-card"
                 whileHover={{ rotate: -1, scale: 1.01 }}
-                className="relative bg-cocoa-900 border-4 border-black p-4 rounded overflow-hidden cursor-pointer"
+                className="relative bg-cocoa-900 border-4 border-black p-2 sm:p-4 rounded overflow-hidden cursor-pointer z-10"
               >
                 <div className="aspect-square w-full rounded border-2 border-black overflow-hidden relative group">
                   <img
@@ -67,7 +67,7 @@ export default function Clearing() {
                     className="w-full h-full object-cover crisp-pixel group-hover:scale-105 transition-transform duration-700"
                   />
                   {/* Banner overlay styled as retro UI caption */}
-                  <div className="absolute inset-x-0 bottom-0 bg-black/90 p-3 border-t-2 border-black flex items-center justify-between font-pixel text-[8px] text-[#eadec9]">
+                  <div className="absolute inset-x-0 bottom-0 bg-black/90 p-2 sm:p-3 border-t-2 border-black flex flex-col sm:flex-row items-center justify-between font-pixel text-[8px] sm:text-[9px] text-[#eadec9] gap-1.5 sm:gap-0 text-center sm:text-left">
                     <span className="tracking-widest uppercase">THE OUTPOST CLEANSING LIGHT</span>
                     <span className="text-amber-orange">MAP-01</span>
                   </div>
