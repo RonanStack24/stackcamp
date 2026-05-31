@@ -88,9 +88,25 @@ export default function Navbar({ onJoinClick }: NavbarProps) {
   const [activeSection, setActiveSection] = useState("home");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
+    // Record visit on mount
+    const recordVisit = async () => {
+      try {
+        const apiUrl = import.meta.env.DEV ? "http://localhost:8000/backend/counter.php" : "/backend/counter.php";
+        const res = await fetch(apiUrl, { method: "POST" });
+        const data = await res.json();
+        if (data.status === "success") {
+          setVisitorCount(data.total_views);
+        }
+      } catch (e) {
+        console.error("Failed to record visit", e);
+      }
+    };
+    recordVisit();
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -191,6 +207,12 @@ export default function Navbar({ onJoinClick }: NavbarProps) {
 
         {/* Theme Toggle and CTA Button Desktop */}
         <div id="nav-actions-desktop" className="hidden lg:flex items-center gap-4">
+          {visitorCount !== null && (
+            <div className="font-pixel text-[9px] text-sage-text bg-cocoa-950/50 px-3 py-1.5 border border-black/30 rounded flex items-center gap-2" title="Total website visitors">
+              <Flame className="w-3 h-3 text-amber-orange animate-pulse" />
+              <span>{visitorCount} Visitors</span>
+            </div>
+          )}
           <button
             onClick={toggleTheme}
             className="p-2 border-2 border-black bg-cocoa-900 text-amber-orange hover:bg-cocoa-800 retro-shadow-sm transition-all focus:outline-none cursor-pointer"
@@ -208,15 +230,25 @@ export default function Navbar({ onJoinClick }: NavbarProps) {
           </button>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          id="nav-toggle-mobile"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="lg:hidden p-2 bg-cocoa-800 border-2 border-black rounded text-warm-beige hover:border-amber-orange focus:outline-none cursor-pointer"
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Mobile Actions (Toggle + Theme) */}
+        <div className="flex lg:hidden items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            className="p-2 border-2 border-black bg-cocoa-900 text-amber-orange hover:bg-cocoa-800 retro-shadow-sm transition-all focus:outline-none cursor-pointer"
+            aria-label="Toggle Theme"
+          >
+            {theme === "dark" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+          </button>
+          
+          <button
+            id="nav-toggle-mobile"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 bg-cocoa-800 border-2 border-black rounded text-warm-beige hover:border-amber-orange focus:outline-none cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer Overlay */}
@@ -243,17 +275,13 @@ export default function Navbar({ onJoinClick }: NavbarProps) {
                   <span>{item.label}</span>
                 </button>
               ))}
-              <div className="flex gap-4 mt-4">
-                <button
-                  onClick={toggleTheme}
-                  className="flex-1 py-3 font-pixel text-[10px] bg-cocoa-800 text-amber-orange border-2 border-black retro-shadow text-center active:translate-x-1 active:translate-y-1 active:shadow-none flex justify-center items-center gap-2"
-                >
-                  {theme === "dark" ? (
-                    <><Moon className="w-4 h-4" /> Light Mode</>
-                  ) : (
-                    <><Sun className="w-4 h-4" /> Dark Mode</>
-                  )}
-                </button>
+              {visitorCount !== null && (
+                <div className="font-pixel text-[10px] text-sage-text flex justify-center items-center gap-2 py-2 mt-2">
+                  <Flame className="w-3 h-3 text-amber-orange animate-pulse" />
+                  <span>{visitorCount} Campers have visited</span>
+                </div>
+              )}
+              <div className="flex mt-4">
                 <button
                   id="join-btn-mobile"
                   onClick={() => {

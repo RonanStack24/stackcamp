@@ -156,7 +156,7 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
           transition={{ delay: 0.3 }}
           className="text-lg md:text-xl text-sage-text leading-relaxed max-w-xl mx-auto font-mono mb-10"
         >
-          No hustle indicators, no trending tabs, just pure code craft and a quiet campfire clearing.
+          Swap endless sprints and noisy tech debates for a peaceful clearing where developers, engineers, and architects can focus purely on building.
         </motion.p>
 
         {/* Action Buttons styled like retro RPG buttons */}
@@ -182,19 +182,18 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
             Explore sandbox
           </button>
         </motion.div>
-
-        {/* Down Bounce Indicator */}
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-sage-text opacity-70 hidden md:flex cursor-pointer"
-          onClick={onExploreClick}
-        >
-          <span className="font-pixel text-[9px] uppercase tracking-wider text-amber-orange">Move Downstairs</span>
-          <ArrowDown className="w-4 h-4 text-amber-orange" />
-        </motion.div>
-
       </div>
+
+      {/* Down Bounce Indicator */}
+      <motion.div
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 1.5, repeat: Infinity }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-sage-text opacity-70 hidden md:flex cursor-pointer z-30"
+        onClick={onExploreClick}
+      >
+        <span className="font-pixel text-[9px] uppercase tracking-wider text-amber-orange">Move Downstairs</span>
+        <ArrowDown className="w-4 h-4 text-amber-orange" />
+      </motion.div>
     </section>
   );
 }

@@ -18,6 +18,7 @@
   --color-amber-orange: var(--theme-amber-orange);
   --color-warm-beige: var(--theme-warm-beige);
   --color-logo-brown: var(--theme-logo-brown);
+  --color-sage-text: var(--theme-sage-text);
 }
 
 :root {
@@ -32,6 +33,7 @@
   --theme-amber-orange: #ea7f43;
   --theme-warm-beige: #eadec9;
   --theme-logo-brown: #2d1c18;
+  --theme-sage-text: #a4b5a6;
   
   --bg-primary: #0e1510;
   --text-primary: #eadec9;
@@ -49,6 +51,7 @@
   --theme-amber-orange: #ff9eaf;
   --theme-warm-beige: #5c433b;
   --theme-logo-brown: #5c433b;
+  --theme-sage-text: #8c736b;
   
   --bg-primary: #fff5f8;
   --text-primary: #5c433b;

@@ -1,0 +1,65 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Dark Green Shield Badge Border -->
+  <path d="M10,1 h12 M7,2 h18 M5,3 h22 M4,4 h24 M3,5 h26 M2,6 h28 M1,7 h30 M1,8 h30 M1,9 h30 M1,10 h30 M1,11 h30 M1,12 h30 M1,13 h30 M1,14 h30 M1,15 h30 M1,16 h30 M1,17 h30 M1,18 h30 M1,19 h30 M1,20 h30 M1,21 h30 M1,22 h30 M1,23 h30 M1,24 h30 M1,25 h30 M1,26 h30 M2,27 h28 M3,28 h26 M5,29 h22 M9,30 h14" fill="#365D39" />
+  
+  <!-- Inner Deep Espresso Chocolate Background -->
+  <path d="M10,2 h12 M8,3 h16 M6,4 h20 M5,5 h22 M4,6 h24 M3,7 h26 M2,8 h28 M2,9 h28 M2,10 h28 M2,11 h28 M2,12 h28 M2,13 h28 M2,14 h28 M2,15 h28 M2,16 h28 M2,17 h28 M2,18 h28 M2,19 h28 M2,20 h28 M2,21 h28 M2,22 h28 M2,23 h28 M2,24 h28 M2,25 h28 M3,26 h26 M5,27 h22 M7,28 h18 M11,29 h10" fill="#201311" />
+
+  <!-- Tiny Yellow Twinkles/Fireflies around -->
+  <rect x="9" y="8" width="1" height="1" fill="#fff59d" />
+  <rect x="23" y="10" width="1" height="1" fill="#fff59d" />
+  <rect x="12" y="11" width="1" height="1" fill="#fff59d" />
+  <rect x="11" y="14" width="1" height="1" fill="#fff59d" />
+
+  <!-- Campfire Left -->
+  <rect x="7" y="21" width="3" height="1" fill="#754c38" />
+  <rect x="5" y="20" width="1" height="2" fill="#5c3826" />
+  <rect x="9" y="20" width="1" height="2" fill="#5c3826" />
+  <rect x="6" y="17" width="3" height="3" fill="#ea7f43" />
+  <rect x="7" y="15" width="1" height="4" fill="#ffb74d" />
+  <rect x="6" y="16" width="1" height="2" fill="#e53935" />
+  <rect x="8" y="16" width="1" height="2" fill="#e53935" />
+  <rect x="7" y="18" width="1" height="1" fill="#ffffff" />
+
+  <!-- Camper Fox sitting Right -->
+  <rect x="23" y="17" width="3" height="3" fill="#ea7f43" />
+  <rect x="22" y="16" width="3" height="2" fill="#ea7f43" />
+  <rect x="24" y="15" width="2" height="2" fill="#ffffff" />
+  
+  <rect x="15" y="7" width="1" height="2" fill="#ea7f43" />
+  <rect x="19" y="7" width="1" height="2" fill="#ea7f43" />
+  <rect x="16" y="8" width="1" height="1" fill="#ffffff" />
+  <rect x="18" y="8" width="1" height="1" fill="#ffffff" />
+
+  <rect x="14" y="9" width="7" height="3" fill="#ea7f43" />
+  <rect x="13" y="11" width="2" height="2" fill="#eadec9" />
+  <rect x="20" y="11" width="2" height="2" fill="#eadec9" />
+  <rect x="15" y="12" width="5" height="1" fill="#eadec9" />
+  <rect x="15" y="10" width="1" height="1" fill="#1b1210" />
+  <rect x="19" y="10" width="1" height="1" fill="#1b1210" />
+  <rect x="17" y="12" width="1" height="1" fill="#1b1210" />
+
+  <rect x="14" y="13" width="7" height="6" fill="#d8923a" />
+  <rect x="15" y="13" width="5" height="1" fill="#fffbcf" stroke="#d8923a" stroke-width="0.5" />
+  <rect x="16" y="15" width="3" height="3" fill="#3f2317" />
+
+  <!-- Grey Mini Laptop -->
+  <rect x="12" y="16" width="4" height="2" fill="#9e9e9e" />
+  <rect x="13" y="18" width="3" height="1" fill="#757575" />
+  <rect x="14" y="17" width="1" height="1" fill="#fff176" />
+
+  <!-- STACKCAMP banner background block at the bottom -->
+  <rect x="6" y="24" width="20" height="4" fill="#365D39" rx="1" />
+  <text 
+    x="16" 
+    y="27.2" 
+    fill="#fcfda1" 
+    font-size="3.1" 
+    font-weight="bold" 
+    font-family="'Courier New', Courier, monospace"
+    text-anchor="middle"
+    letter-spacing="0.1"
+  >
+    STACKCAMP
+  </text>
+</svg>

@@ -60,10 +60,38 @@ export default function WhatIsComing() {
   const [newCollabSender, setNewCollabSender] = useState("");
 
   // 4. Build Logs timeline status
-  const [buildLogs, setBuildLogs] = useState([
-    { id: "b1", camper: "RonanStack24", mood: "🔥 Fired up", text: "Successfully finished the Stackcamp layout. The community features are coming together.", time: "Just now" },
-    { id: "b2", camper: "PixelPioneer", mood: "☕ Cozy Code", text: "Working on customizable pixel profile cards for all creators.", time: "10 mins ago" },
-  ]);
+  type BuildLog = {
+    id: number | string;
+    author: string;
+    mood: string;
+    content: string;
+    created_at: string;
+  };
+  const [buildLogs, setBuildLogs] = useState<BuildLog[]>([]);
+  const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+  const [isPostingLog, setIsPostingLog] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "logs") {
+      fetchLogs();
+    }
+  }, [activeTab]);
+
+  const fetchLogs = async () => {
+    setIsLoadingLogs(true);
+    try {
+      const apiUrl = import.meta.env.DEV ? "http://localhost:8000/backend/logs.php" : "/backend/logs.php";
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      if (data.status === "success") {
+        setBuildLogs(data.data);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoadingLogs(false);
+    }
+  };
   const [newLogText, setNewLogText] = useState("");
   const [newLogMood, setNewLogMood] = useState("🔥 Fired up");
 
@@ -103,20 +131,31 @@ export default function WhatIsComing() {
     }
   };
 
-  const handlePostLog = (e: FormEvent) => {
+  const handlePostLog = async (e: FormEvent) => {
     e.preventDefault();
-    if (newLogText.trim()) {
-      setBuildLogs([
-        {
-          id: `b_${Date.now()}`,
-          camper: "Guest Camper",
-          mood: newLogMood,
-          text: newLogText.trim(),
-          time: "Just now"
-        },
-        ...buildLogs
-      ]);
-      setNewLogText("");
+    if (newLogText.trim() && !isPostingLog) {
+      setIsPostingLog(true);
+      try {
+        const apiUrl = import.meta.env.DEV ? "http://localhost:8000/backend/logs.php" : "/backend/logs.php";
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            author: badgeName || "Guest Camper",
+            mood: newLogMood,
+            content: newLogText.trim()
+          })
+        });
+        const data = await res.json();
+        if (data.status === "success") {
+          setBuildLogs([data.data, ...buildLogs]);
+          setNewLogText("");
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsPostingLog(false);
+      }
     }
   };
 
@@ -539,7 +578,12 @@ export default function WhatIsComing() {
                         />
                         <button
                           type="submit"
-                          className="p-2.5 bg-amber-orange text-cocoa-950 font-bold border border-black hover:bg-[#ffa16c] transition-colors"
+                          disabled={isPostingLog}
+                          className={`p-2.5 font-bold border border-black transition-colors ${
+                            isPostingLog 
+                              ? "bg-cocoa-800 text-sage-text cursor-not-allowed" 
+                              : "bg-amber-orange text-cocoa-950 hover:bg-[#ffa16c]"
+                          }`}
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -547,16 +591,22 @@ export default function WhatIsComing() {
 
                       {/* Log timeline entries */}
                       <div className="space-y-2.5 max-h-48 overflow-y-auto pr-1">
-                        {buildLogs.map((b) => (
-                          <div key={b.id} className="relative pl-4 border-l-2 border-black text-xs font-mono">
-                            <span className="absolute -left-[5px] top-1.5 w-2 h-2 rounded bg-amber-orange border border-black" />
-                            <div className="flex justify-between text-[10px] text-sage-text mb-0.5">
-                              <span className="text-[#ffa16c] font-semibold">@{b.camper} ({b.mood})</span>
-                              <span>{b.time}</span>
+                        {isLoadingLogs ? (
+                          <p className="text-[10px] text-sage-text font-mono italic text-center py-4 animate-pulse">Loading secure database logs...</p>
+                        ) : buildLogs.length === 0 ? (
+                          <p className="text-[10px] text-sage-text font-mono italic text-center py-4">No logs yet. Be the first to post!</p>
+                        ) : (
+                          buildLogs.map((b) => (
+                            <div key={b.id} className="relative pl-4 border-l-2 border-black text-xs font-mono">
+                              <span className="absolute -left-[5px] top-1.5 w-2 h-2 rounded bg-amber-orange border border-black" />
+                              <div className="flex justify-between text-[10px] text-sage-text mb-0.5">
+                                <span className="text-[#ffa16c] font-semibold">@{b.author} ({b.mood})</span>
+                                <span>{new Date(b.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})}</span>
+                              </div>
+                              <p className="text-warm-beige leading-relaxed">{b.content}</p>
                             </div>
-                            <p className="text-warm-beige leading-relaxed">{b.text}</p>
-                          </div>
-                        ))}
+                          ))
+                        )}
                       </div>
                     </motion.div>
                   )}

@@ -13,11 +13,47 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
   const [name, setName] = useState("");
   const [camperType, setCamperType] = useState("Creators Studio");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (email && name) {
-      setIsSubmitted(true);
+      setIsSubmitting(true);
+      setErrorMessage("");
+
+      try {
+        // If we are developing locally, use localhost:8000. 
+        // If we are on InfinityFree, use the relative path!
+        const apiUrl = import.meta.env.DEV 
+          ? "http://localhost:8000/backend/api.php" 
+          : "/backend/api.php";
+
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            camperType,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.status === "success") {
+          setIsSubmitted(true);
+        } else {
+          setErrorMessage(data.message || "Failed to register.");
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        setErrorMessage("Network error. Make sure your PHP server is running!");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -25,6 +61,8 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
     setEmail("");
     setName("");
     setIsSubmitted(false);
+    setIsSubmitting(false);
+    setErrorMessage("");
     onClose();
   };
 
@@ -76,15 +114,15 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
                       </div>
                       <div className="space-y-0.5">
                         <span className="text-[9px] sm:text-[10px] font-pixel tracking-widest uppercase text-amber-orange leading-none block">
-                          CAMPSITE GATEWAY
+                          STACKCAMP REGISTRY
                         </span>
                         <h3 className="font-display text-3xl sm:text-4xl font-bold text-warm-beige leading-none">
-                          Register Entry
+                          Claim Your Cabin
                         </h3>
                       </div>
                     </div>
                     <p className="text-sage-text text-xs leading-relaxed font-mono">
-                      Stitch your name and email correspondence address to claim cabin keys. Registered users unlock private updates from general developer RonanStack24 inside the clearing.
+                      Join a peaceful digital campsite for developers, engineers, and creators. Secure your keys to leave the social media noise behind, connect with independent builders, and receive private updates from RonanStack24.
                     </p>
                   </div>
 
@@ -130,6 +168,13 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
                         <option value="Student Lounge">Student Lounge</option>
                         <option value="General Camper">General Woodland Camper</option>
                       </select>
+                      <p className="text-[10px] text-sage-text font-mono mt-1 italic opacity-80">
+                        {camperType === "Creators Studio" && "For UI/UX designers, artists, and content creators."}
+                        {camperType === "Builders Workshop" && "For software engineers and full-stack coders."}
+                        {camperType === "Innovators Den" && "For founders, product managers, and visionaries."}
+                        {camperType === "Student Lounge" && "For beginners and students starting their journey."}
+                        {camperType === "General Camper" && "For anyone who just wants to hang out by the fire."}
+                      </p>
                     </div>
 
                     {/* Terms / Info */}
@@ -138,12 +183,25 @@ export default function JoinCampModal({ isOpen, onClose }: JoinCampModalProps) {
                       <span>Zero trackers. Instant manual newsletter keys. Unsubscribe in an individual click anytime.</span>
                     </div>
 
+                    {/* Error Message */}
+                    {errorMessage && (
+                      <div className="p-3 bg-red-900/30 border border-red-500 text-red-300 text-[10px] font-pixel leading-relaxed">
+                        ⚠️ {errorMessage}
+                      </div>
+                    )}
+
                     {/* Register button */}
                     <button
                       type="submit"
-                      className="font-pixel text-[10px] w-full mt-4 py-4 bg-amber-orange hover:bg-[#ffa16c] text-cocoa-950 font-bold pixel-border retro-shadow transition-all active:translate-x-1 active:translate-y-1 active:shadow-none cursor-pointer focus:outline-none"
+                      disabled={isSubmitting}
+                      className={`font-pixel text-[10px] w-full mt-4 py-4 bg-amber-orange text-cocoa-950 font-bold pixel-border retro-shadow transition-all flex justify-center items-center gap-2 ${
+                        isSubmitting 
+                          ? "opacity-70 cursor-not-allowed" 
+                          : "hover:bg-[#ffa16c] active:translate-x-1 active:translate-y-1 active:shadow-none cursor-pointer focus:outline-none"
+                      }`}
                     >
-                      <Mail className="w-4 h-4 text-cocoa-950" /> Register Camp ID
+                      <Mail className="w-4 h-4 text-cocoa-950" /> 
+                      {isSubmitting ? "TRANSMITTING..." : "Register Camp ID"}
                     </button>
 
                   </form>
