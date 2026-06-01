@@ -7,6 +7,3 @@ A cozy digital camp for developers, engineers, architects, builders, creators, s
 
 ## License
 MIT License
-
-## Demo
-**[https://stackcamp.site/](https://stackcamp.site/)**
