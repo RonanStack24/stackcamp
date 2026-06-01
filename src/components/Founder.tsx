@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Award, Code, Hammer, MessageSquare, Terminal, Coffee, Sparkles, Map } from "lucide-react";
 
@@ -9,49 +9,49 @@ export default function Founder() {
       name: "Ronan Antoque",
       role: "Founder / Guild Leader",
       image: "/ronan.jpg",
-      quote: "Stackcamp was designed to be a digital camp house that feels like a quiet home. No hustle noise, just patient developers refining their craft.",
+      quote: "We didn't just want to build another social network. We wanted to build a home for developers to escape the noise and just build.",
       bio: "I am an aspiring full-stack developer dedicated to diving deep into C#, .NET, and responsive user experiences.",
       skills: [
         { name: "ASP.NET Core", icon: <Terminal className="w-4 h-4" /> },
         { name: "C# / .NET Ninja", icon: <Code className="w-4 h-4" /> },
         { name: "Aspiring Front-End Dev", icon: <Hammer className="w-4 h-4" /> },
         { name: "Learning PHP / Laravel", icon: <Terminal className="w-4 h-4" /> },
-        { name: "Learning IoT", icon: <Sparkles className="w-4 h-4" /> },
+        { name: "IoT Agritech", icon: <Sparkles className="w-4 h-4" /> },
       ],
-      badge: "GUILD LEADER"
+      badge: "GUILD LEADER / DEV"
     },
     {
-      id: "cofounder1",
-      name: "Co-Founder 1",
-      role: "Co-Founder / Software Developer",
-      image: "https://ui-avatars.com/api/?name=SD&background=ea7f43&color=201311&size=200",
-      quote: "Every great structure needs a solid foundation. We build tools that don't just work—they last.",
-      bio: "Focusing on building scalable software solutions and bringing complex logic to life for our woodland community.",
+      id: "jumbo",
+      name: "Cris Jumbo Caras",
+      role: "Co-Founder / Architect",
+      image: "/jumbo.jpg",
+      quote: "Every great camp needs a solid foundation. I design the real-world spaces where our community can gather.",
+      bio: "A real-world architect focused on spatial design, blueprints, and bringing physical structures to life.",
       skills: [
-        { name: "Software Dev", icon: <Map className="w-4 h-4" /> },
-        { name: "Full-Stack Logic", icon: <Code className="w-4 h-4" /> },
+        { name: "Building Architecture", icon: <Hammer className="w-4 h-4" /> },
+        { name: "Spatial Design", icon: <Map className="w-4 h-4" /> },
       ],
-      badge: "DEVELOPER"
+      badge: "ARCHITECT"
     },
     {
-      id: "cofounder2",
-      name: "Co-Founder 2",
-      role: "Co-Founder / Backend Expert",
+      id: "aldrin",
+      name: "Aldrin Miller Basalo",
+      role: "Co-Founder / Software Devs Backend Expert",
       image: "https://ui-avatars.com/api/?name=BE&background=ea7f43&color=201311&size=200",
-      quote: "If the server isn't secure and lightning fast, we haven't done our job right.",
+      quote: "A beautiful campsite relies on the unseen machinery beneath. I write the backend logic and databases that keep Stackcamp running seamlessly.",
       bio: "Obsessed with creating robust databases, secure API endpoints, and making sure the camp's backend runs smoothly.",
       skills: [
         { name: "Server Architecture", icon: <Sparkles className="w-4 h-4" /> },
         { name: "Database Wizardry", icon: <Coffee className="w-4 h-4" /> },
       ],
-      badge: "BACKEND"
+      badge: "DEV"
     },
     {
       id: "cofounder3",
-      name: "Veejay",
+      name: "Veejay Sumabong",
       role: "Co-Founder / Electronics Engineer",
       image: "/veejay.jpg",
-      quote: "Scouting the physical layer and ensuring hardware and software communicate flawlessly.",
+      quote: "I designed Stackcamp and wired the grid. They asked who made it possible God did.",
       bio: "Bridging the gap between the digital world and the physical world, bringing low-level engineering to our campsite.",
       skills: [
         { name: "Circuit Design", icon: <Terminal className="w-4 h-4" /> },
@@ -62,6 +62,14 @@ export default function Founder() {
   ];
 
   const [selectedIdx, setSelectedIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSelectedIdx((prev) => (prev + 1) % foundersData.length);
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, [selectedIdx, foundersData.length]);
+
   const activeFounder = foundersData[selectedIdx];
 
   return (
@@ -72,9 +80,14 @@ export default function Founder() {
         
         {/* CHARACTER SELECT ROW */}
         <div className="mb-14 text-center space-y-8">
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-warm-beige select-none">
-            Choose Character
-          </h2>
+          <div className="space-y-4">
+            <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-warm-beige select-none">
+              Choose Character
+            </h2>
+            <p className="text-sage-text font-mono text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed px-4">
+              Stackcamp was founded by a group of friends from IT, Computer Science, Electronics Engineer, and Architecture in the Philippines.
+            </p>
+          </div>
           <div className="flex flex-wrap justify-center gap-6">
             {foundersData.map((founder, idx) => {
               const isSelected = idx === selectedIdx;
@@ -143,7 +156,7 @@ export default function Founder() {
                     <img
                       src={activeFounder.image}
                       alt={activeFounder.name}
-                      className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05] grayscale-[15%] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-500"
+                      className="w-full h-full object-cover object-top filter brightness-[0.9] contrast-[1.05] grayscale-[15%] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-500"
                     />
                     {/* Small gold token banner in picture corner */}
                     <div className="absolute top-2 left-2 bg-yellow-500 border border-black p-1 text-[8px] font-pixel text-black leading-none">
