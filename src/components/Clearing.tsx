@@ -1,7 +1,37 @@
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Trees, Network, Spade, Footprints } from "lucide-react";
+import { Trees, Network, Spade, Footprints, Users } from "lucide-react";
+
+interface Camper {
+  name: string;
+  camper_type: string;
+  created_at: string;
+}
 
 export default function Clearing() {
+  const [campers, setCampers] = useState<Camper[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCampers = async () => {
+      try {
+        const apiUrl = import.meta.env.DEV 
+          ? "http://localhost:8000/backend/api.php" 
+          : "/backend/api.php";
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        if (data.status === "success" && data.campers) {
+          setCampers(data.campers);
+        }
+      } catch (e) {
+        console.error("Failed to fetch campers", e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCampers();
+  }, []);
+
   return (
     <section id="about" className="py-24 bg-cocoa-950/80 relative border-t-4 border-black">
       {/* Repeating 8-bit grid background blocks */}
@@ -43,6 +73,41 @@ export default function Clearing() {
                 </p>
               </div>
             </motion.div>
+
+            {/* Live Roster: Currently at Camp */}
+            <div className="pt-6 border-t-2 border-black/20">
+              <h3 className="font-pixel text-[11px] text-amber-orange tracking-widest uppercase mb-4 flex items-center gap-2">
+                <Users className="w-4 h-4" /> Currently at Camp
+              </h3>
+              
+              {isLoading ? (
+                <div className="font-mono text-sm text-sage-text animate-pulse">Scouting the area...</div>
+              ) : campers.length > 0 ? (
+                <div className="flex flex-wrap gap-3">
+                  {campers.map((camper, idx) => (
+                    <motion.div 
+                      key={`${camper.name}-${idx}`}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="flex items-center gap-2 p-1.5 pr-3 bg-cocoa-950 border-2 border-black rounded-full"
+                      title={camper.camper_type}
+                    >
+                      <img 
+                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(camper.name)}&background=ea7f43&color=201311&size=32&bold=true`}
+                        alt={camper.name}
+                        className="w-6 h-6 rounded-full crisp-pixel border border-black"
+                      />
+                      <span className="font-mono text-xs font-medium text-warm-beige truncate max-w-[100px]">
+                        {camper.name}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="font-mono text-sm text-sage-text italic">The clearing is quiet. Claim your spot first!</div>
+              )}
+            </div>
           </div>
 
           {/* Photo stacked card presentation side */}

@@ -43,6 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(400);
         echo json_encode(["status" => "error", "message" => "Missing required fields."]);
     }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    try {
+        // Fetch the 20 most recent campers. We do NOT fetch email for privacy.
+        $stmt = $pdo->query("SELECT name, camper_type, created_at FROM waitlist ORDER BY created_at DESC LIMIT 20");
+        $campers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["status" => "success", "campers" => $campers]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(["status" => "error", "message" => "Failed to fetch campers."]);
+    }
 } else {
     http_response_code(405);
     echo json_encode(["status" => "error", "message" => "Method not allowed."]);

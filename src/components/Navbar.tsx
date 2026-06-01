@@ -96,10 +96,19 @@ export default function Navbar({ onJoinClick }: NavbarProps) {
     const recordVisit = async () => {
       try {
         const apiUrl = import.meta.env.DEV ? "http://localhost:8000/backend/counter.php" : "/backend/counter.php";
-        const res = await fetch(apiUrl, { method: "POST" });
+        const hasVisited = sessionStorage.getItem("hasVisitedStackcamp");
+        
+        // If already visited this session, just GET the count. Otherwise POST to increment.
+        const method = hasVisited ? "GET" : "POST";
+        
+        const res = await fetch(apiUrl, { method });
         const data = await res.json();
+        
         if (data.status === "success") {
           setVisitorCount(data.total_views);
+          if (!hasVisited) {
+            sessionStorage.setItem("hasVisitedStackcamp", "true");
+          }
         }
       } catch (e) {
         console.error("Failed to record visit", e);
