@@ -9,16 +9,19 @@ export default function Founder() {
       name: "Ronan Antoque",
       role: "Founder / Guild Leader",
       image: "/ronan.jpg",
-      quote: "We didn't just want to build another social network. We wanted to build a home for developers to escape the noise and just build.",
-      bio: "I am an aspiring full-stack developer dedicated to diving deep into C#, .NET, and responsive user experiences.",
+      quote: "Stackcamp is our quiet corner of the internet—a place where builders can gather, share ideas, and create meaningful things together at their own pace.",
+      bio: "I am an aspiring network engineer dedicated to diving deep into routing protocols, network security, and building robust, scalable infrastructures.",
       skills: [
-        { name: "ASP.NET Core", icon: <Terminal className="w-4 h-4" /> },
-        { name: "C# / .NET Ninja", icon: <Code className="w-4 h-4" /> },
-        { name: "Aspiring Front-End Dev", icon: <Hammer className="w-4 h-4" /> },
-        { name: "Learning PHP / Laravel", icon: <Terminal className="w-4 h-4" /> },
-        { name: "IoT Agritech", icon: <Sparkles className="w-4 h-4" /> },
+        { name: "Routing & Switching", icon: <Terminal className="w-4 h-4" /> },
+        { name: "Network Security", icon: <Code className="w-4 h-4" /> },
+        { name: "Infrastructure Design", icon: <Map className="w-4 h-4" /> },
+        { name: "Packet Analysis", icon: <Sparkles className="w-4 h-4" /> },
+        { name: "Server Administration", icon: <Coffee className="w-4 h-4" /> },
+        { name: "Hobbyist Developer", icon: <Code className="w-4 h-4" /> },
+        { name: "Embedded Systems Design Engineer", icon: <Terminal className="w-4 h-4" /> },
+        { name: "Aspiring Security Architect", icon: <Sparkles className="w-4 h-4" /> },
       ],
-      badge: "GUILD LEADER / DEV"
+      badge: "GUILD LEADER"
     },
     {
       id: "jumbo",

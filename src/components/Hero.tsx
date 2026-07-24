@@ -119,10 +119,10 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="pixel-border border-black bg-cocoa-900 retro-shadow p-5 max-w-2xl mx-auto mb-10 text-left relative overflow-hidden flex flex-col sm:flex-row gap-4 items-center sm:items-start"
+          className="pixel-border border-black bg-cocoa-900 retro-shadow p-4 sm:p-5 max-w-2xl mx-auto mb-8 sm:mb-10 text-left relative overflow-hidden flex flex-col sm:flex-row gap-3 sm:gap-4 items-center sm:items-start"
         >
           {/* Avatar frame */}
-          <div className="w-16 h-16 bg-logo-brown border-2 border-black retro-shadow-sm flex-shrink-0 flex items-center justify-center p-1.5 rounded relative">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-logo-brown border-2 border-black retro-shadow-sm flex-shrink-0 flex items-center justify-center p-1 sm:p-1.5 rounded relative">
             <PixelFoxLogo />
             {/* Tiny retro name label below avatar */}
             <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-black px-1 text-[8px] text-amber-orange font-pixel tracking-tighter">
@@ -131,17 +131,20 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
           </div>
 
           {/* dialogue balloon with typed effect */}
-          <div className="space-y-1.5 flex-1 w-full text-center sm:text-left">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-pixel text-amber-orange leading-none uppercase">
-                System Guide • Camper Companion
+          <div className="space-y-2 flex-1 w-full min-w-0 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-1">
+              <span className="max-w-full text-[9px] sm:text-[11px] font-pixel text-amber-orange leading-relaxed uppercase break-words">
+                System Guide <span aria-hidden="true">•</span> Camper Companion
               </span>
               <span className="text-[10px] text-warm-beige/60 font-mono hidden sm:inline">
                 A1-CAMP-BOT
               </span>
             </div>
             
-            <p className="text-sm md:text-base leading-relaxed text-warm-beige font-mono whitespace-pre-wrap select-none min-h-[60px]">
+            <p
+              aria-live="polite"
+              className="text-[13px] sm:text-sm md:text-base leading-relaxed text-warm-beige font-mono whitespace-pre-wrap break-words select-none min-h-[104px] sm:min-h-[82px] md:min-h-[60px]"
+            >
               {typedText}
               <span className="inline-block w-2.5 h-4 bg-amber-orange ml-1 animate-pulse" />
             </p>

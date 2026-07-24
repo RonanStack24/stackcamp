@@ -12,6 +12,7 @@ import WhatIsComing from "./components/WhatIsComing";
 import Founder from "./components/Founder";
 import PixelForestBackground from "./components/PixelForestBackground";
 import JoinCampModal from "./components/JoinCampModal";
+import CommunityGuide from "./components/CommunityGuide";
 
 function LoadingScreen() {
   const [progress, setProgress] = useState(0);
@@ -153,10 +154,13 @@ export default function App() {
       {/* 3. Section I: Step Into The Clearing */}
       <Clearing />
 
-      {/* 4. Section II: What's Coming Soon & Sandbox playgrounds */}
+      {/* 4. A simple onboarding guide and public product roadmap */}
+      <CommunityGuide />
+
+      {/* 5. Section II: What's Coming Soon & Sandbox playgrounds */}
       <WhatIsComing />
 
-      {/* 5. Section III: Meet the Founder */}
+      {/* 6. Section III: Meet the Founder */}
       <Founder />
 
       {/* 6. Footer matches exactly: Stackcamp Left, Links Right with 8-bit theme */}
