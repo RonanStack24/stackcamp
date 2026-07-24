@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+backend/config.php
+infinityfree-upload/
+infinityfree-credentials.local.ps1

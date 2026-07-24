@@ -101,6 +101,22 @@ On Windows PowerShell, use `npm.cmd run dev` if script execution is disabled.
 | `backend/logs.php` | Create and retrieve build logs |
 | `backend/counter.php` | Record and retrieve page views |
 
+## Deploy to InfinityFree
+
+1. Create a MySQL database in the InfinityFree control panel.
+2. Open that database in phpMyAdmin and import `backend/schema.infinityfree.sql`.
+3. Copy `backend/config.example.php` to `backend/config.php`.
+4. Add the database host, name, username, and hosting-account password shown by InfinityFree.
+5. Prepare the upload folder:
+
+   ```powershell
+   npm.cmd run build:infinityfree
+   ```
+
+6. Upload everything inside `infinityfree-upload` to the domain's `htdocs` directory using FTP or the online File Manager.
+
+`backend/config.php` and the generated upload folder are ignored by Git so database credentials cannot be committed accidentally.
+
 ## Roadmap
 
 - Secure camper accounts
