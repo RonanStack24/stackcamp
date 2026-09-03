@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import Navbar, { PixelFoxLogo } from "./components/Navbar";
 import Hero from "./components/Hero";
 import Clearing from "./components/Clearing";
@@ -14,47 +14,288 @@ import PixelForestBackground from "./components/PixelForestBackground";
 import JoinCampModal from "./components/JoinCampModal";
 import CommunityGuide from "./components/CommunityGuide";
 
-function LoadingScreen() {
+interface SparkClick {
+  id: number;
+  x: number;
+  y: number;
+}
+
+function LoadingScreen({ onComplete }: { onComplete: () => void }) {
+  const shouldReduceMotion = useReducedMotion();
   const [progress, setProgress] = useState(0);
+  const [clicks, setClicks] = useState<SparkClick[]>([]);
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      setProgress(100);
+      const timer = setTimeout(onComplete, 200);
+      return () => clearTimeout(timer);
+    }
+
     const interval = setInterval(() => {
-      setProgress(p => {
+      setProgress((p) => {
         if (p >= 100) {
           clearInterval(interval);
+          setTimeout(onComplete, 350);
           return 100;
         }
-        return p + Math.floor(Math.random() * 15) + 5;
+        return Math.min(100, p + Math.floor(Math.random() * 8) + 6);
       });
-    }, 150);
+    }, 120);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [shouldReduceMotion, onComplete]);
+
+  const handleScreenClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return;
+    const newSpark: SparkClick = {
+      id: Date.now() + Math.random(),
+      x: e.clientX,
+      y: e.clientY,
+    };
+    setClicks((prev) => [...prev.slice(-6), newSpark]);
+    setProgress((p) => {
+      const next = Math.min(100, p + 7);
+      if (next >= 100) {
+        setTimeout(onComplete, 350);
+      }
+      return next;
+    });
+  };
+
+  const getStatusText = (p: number) => {
+    if (p < 25) return "🌲 Walking along the pine trail...";
+    if (p < 50) return "🪵 Gathering dry woodland kindling...";
+    if (p < 75) return "🔥 Striking flint to ignite the campfire...";
+    if (p < 95) return "☕ Brewing fresh cocoa for the clearing...";
+    return "✨ Clearing unlocked! Welcome camper.";
+  };
+
+  const filledBlocks = Math.round((progress / 100) * 10);
 
   return (
     <motion.div
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-cocoa-950 font-mono"
+      exit={{ opacity: 0, scale: 1.03, filter: "blur(6px)" }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      onClick={handleScreenClick}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#120a09] font-mono select-none overflow-hidden cursor-pointer"
     >
-      <div className="flex flex-col items-center gap-6">
-        <div className="transform scale-150 mb-4">
-          <PixelFoxLogo />
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="font-pixel text-[11px] text-amber-orange tracking-widest uppercase animate-pulse">
-            Booting StackOS...
-          </span>
-          <div className="w-48 h-3 border-2 border-black bg-cocoa-900 p-0.5 retro-shadow-sm">
-            <div 
-              className="h-full bg-amber-orange transition-all duration-150 ease-out" 
-              style={{ width: `${Math.min(progress, 100)}%` }} 
+      {/* Warm Ambient Hearth Radial Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(234,127,67,0.18)_0%,_transparent_70%)] pointer-events-none" />
+
+      {/* Floating Ambient Firefly Sparks */}
+      {!shouldReduceMotion && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <motion.div
+              key={`firefly-${i}`}
+              initial={{
+                x: `${(i * 7 + 4) % 100}vw`,
+                y: "110vh",
+                opacity: 0,
+                scale: Math.random() * 0.5 + 0.6,
+              }}
+              animate={{
+                y: "-10vh",
+                opacity: [0, 0.9, 0],
+                x: [`${(i * 7 + 4) % 100}vw`, `${((i * 7 + 4) % 100) + (i % 2 === 0 ? 3 : -3)}vw`],
+              }}
+              transition={{
+                duration: 6 + (i % 4) * 2,
+                repeat: Infinity,
+                delay: (i * 0.4) % 5,
+                ease: "linear",
+              }}
+              className="absolute w-1.5 h-1.5 bg-[#fff59d] rounded-full filter blur-[0.5px]"
             />
+          ))}
+        </div>
+      )}
+
+      {/* Interactive Click Sparks */}
+      <AnimatePresence>
+        {clicks.map((c) => (
+          <motion.div
+            key={c.id}
+            initial={{ opacity: 1, scale: 0.5, x: c.x, y: c.y }}
+            animate={{ opacity: 0, scale: 1.6, y: c.y - 40 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="fixed pointer-events-none z-50 text-amber-orange font-pixel text-xs font-bold -translate-x-1/2 -translate-y-1/2 flex items-center gap-1"
+          >
+            <span>✨</span>
+            <span className="text-[9px] bg-black/80 px-1 border border-amber-orange">+7% STOKE!</span>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      {/* Central Retro Loading Terminal Card */}
+      <div className="relative z-10 w-full max-w-sm sm:max-w-md mx-4 p-6 sm:p-8 bg-cocoa-950 border-4 border-black retro-shadow text-center flex flex-col items-center gap-6">
+        
+        {/* Top retro badge header */}
+        <div className="flex items-center justify-between w-full border-b-2 border-black/60 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 bg-amber-orange animate-ping rounded-full" />
+            <span className="font-pixel text-[9px] text-amber-orange tracking-wider uppercase">
+              STACKCAMP • BOOT SEQUENCE
+            </span>
           </div>
-          <span className="text-[10px] text-sage-text">
-            {Math.min(progress, 100)}% LOADED
+          <span className="font-pixel text-[9px] text-sage-text opacity-70">
+            v1.0.4
           </span>
         </div>
+
+        {/* Centerpiece: Animated Pixel Campfire & Mochi Fox Vignette */}
+        <div className="relative my-2 w-32 h-24 flex items-center justify-center">
+          {/* Pulsing hearth glow */}
+          <motion.div
+            animate={shouldReduceMotion ? undefined : { scale: [1, 1.15, 1], opacity: [0.4, 0.7, 0.4] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 bg-amber-orange/30 rounded-full filter blur-md"
+          />
+
+          <svg 
+            className="w-28 h-28 crisp-pixel relative z-10 select-none overflow-visible" 
+            viewBox="0 0 32 32" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* Campfire Base Logs */}
+            <rect x="5" y="24" width="9" height="2" fill="#201311" />
+            <rect x="6" y="23" width="7" height="1" fill="#5c3826" />
+            <rect x="7" y="22" width="5" height="1" fill="#754c38" />
+
+            {/* Rising Animated Flame (Grows with progress!) */}
+            <motion.g
+              animate={shouldReduceMotion ? undefined : {
+                scaleY: [1, 1.2, 0.94, 1.15, 1],
+                scaleX: [1, 0.96, 1.04, 0.98, 1],
+              }}
+              transition={{ duration: 0.75, repeat: Infinity, ease: "easeInOut" }}
+              style={{ transformOrigin: "9px 24px" }}
+            >
+              <rect x="7" y="17" width="5" height="5" fill="#ea7f43" />
+              <rect x="8" y="14" width="3" height="4" fill="#ea7f43" />
+              <rect x="8" y="17" width="3" height="3" fill="#ffb74d" />
+              <rect x="9" y="15" width="1" height="4" fill="#fff59d" />
+              <rect x="9" y="18" width="1" height="2" fill="#ffffff" />
+            </motion.g>
+
+            {/* Rising Sparks */}
+            {!shouldReduceMotion && (
+              <g>
+                <motion.rect
+                  animate={{ y: [0, -8, -14], opacity: [0, 1, 0], x: [0, -1, 1] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: "easeOut" }}
+                  x="8" y="14" width="1" height="1" fill="#fca859"
+                />
+                <motion.rect
+                  animate={{ y: [0, -10, -16], opacity: [0, 1, 0], x: [0, 1, -1] }}
+                  transition={{ duration: 1.8, repeat: Infinity, delay: 0.3, ease: "easeOut" }}
+                  x="10" y="13" width="1" height="1" fill="#ffa16c"
+                />
+              </g>
+            )}
+
+            {/* Mochi the Fox Sitting Right, warming paws */}
+            {/* Animated Tail */}
+            <motion.g
+              animate={shouldReduceMotion ? undefined : { rotate: [-6, 16, -6] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+              style={{ transformOrigin: "24px 22px" }}
+            >
+              <rect x="23" y="18" width="4" height="4" fill="#ea7f43" />
+              <rect x="24" y="16" width="3" height="3" fill="#ea7f43" />
+              <rect x="25" y="15" width="2" height="2" fill="#ffffff" />
+            </motion.g>
+
+            {/* Body & Head */}
+            <motion.g
+              animate={shouldReduceMotion ? undefined : { y: [0, -1.2, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {/* Ears */}
+              <rect x="16" y="9" width="2" height="3" fill="#ea7f43" />
+              <rect x="21" y="9" width="2" height="3" fill="#ea7f43" />
+              <rect x="17" y="10" width="1" height="2" fill="#ffffff" />
+              <rect x="21" y="10" width="1" height="2" fill="#ffffff" />
+
+              {/* Head */}
+              <rect x="15" y="12" width="9" height="3" fill="#ea7f43" />
+              <rect x="14" y="14" width="3" height="2" fill="#eadec9" />
+              <rect x="22" y="14" width="3" height="2" fill="#eadec9" />
+              <rect x="16" y="15" width="7" height="1" fill="#eadec9" />
+              <rect x="17" y="13" width="1" height="1" fill="#1b1210" />
+              <rect x="21" y="13" width="1" height="1" fill="#1b1210" />
+              <rect x="19" y="15" width="1" height="1" fill="#1b1210" />
+
+              {/* Sweater */}
+              <rect x="16" y="16" width="7" height="6" fill="#d8923a" />
+              <rect x="17" y="16" width="5" height="1" fill="#fffbcf" />
+              <rect x="18" y="18" width="3" height="3" fill="#3f2317" />
+
+              {/* Steaming Cocoa Mug */}
+              <rect x="13" y="19" width="2" height="3" fill="#ffffff" />
+              <rect x="12" y="20" width="1" height="1" fill="#ffffff" />
+              <motion.rect
+                animate={shouldReduceMotion ? undefined : { y: [0, -3, -6], opacity: [0, 0.8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+                x="13" y="18" width="1" height="1" fill="#eadec9"
+              />
+            </motion.g>
+          </svg>
+        </div>
+
+        {/* Progressive Campsite Story Message */}
+        <div className="w-full bg-cocoa-900 border-2 border-black p-3 retro-shadow-sm min-h-[48px] flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={getStatusText(progress)}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="text-xs sm:text-sm text-warm-beige font-mono font-medium"
+            >
+              {getStatusText(progress)}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+
+        {/* 10-Block Segmented 8-Bit Progress Bar */}
+        <div className="w-full space-y-2">
+          <div className="flex gap-1.5 w-full bg-cocoa-900 border-2 border-black p-1.5 retro-shadow-sm">
+            {Array.from({ length: 10 }).map((_, idx) => {
+              const isFilled = idx < filledBlocks;
+              return (
+                <div
+                  key={idx}
+                  className={`flex-1 h-3.5 border border-black transition-colors duration-200 ${
+                    isFilled 
+                      ? "bg-amber-orange shadow-[inset_0_2px_0_rgba(255,255,255,0.4)]" 
+                      : "bg-cocoa-950/70"
+                  }`}
+                />
+              );
+            })}
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] font-mono">
+            <span className="text-sage-text">CAMP FIRE LEVEL</span>
+            <span className="font-pixel text-amber-orange tracking-wider text-xs">
+              {progress}%
+            </span>
+          </div>
+        </div>
+
+        {/* Interactive Stoke Hint */}
+        <div className="pt-1">
+          <span className="inline-flex items-center gap-1 text-[9px] font-pixel text-sage-text/80 tracking-tight animate-pulse bg-cocoa-900/60 px-2 py-1 border border-black/60 rounded">
+            <span>🪵</span> CLICK ANYWHERE TO STOKE THE FIRE (+7%) <span>🔥</span>
+          </span>
+        </div>
+
       </div>
     </motion.div>
   );
@@ -105,10 +346,10 @@ export default function App() {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
-    // Simulate initial loading time
+    // Fallback safety timeout
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1800);
+    }, 4500);
     
     return () => {
       clearTimeout(timer);
@@ -130,7 +371,12 @@ export default function App() {
   return (
     <>
       <AnimatePresence>
-        {isLoading && <LoadingScreen key="loading-screen" />}
+        {isLoading && (
+          <LoadingScreen 
+            key="loading-screen" 
+            onComplete={() => setIsLoading(false)} 
+          />
+        )}
       </AnimatePresence>
 
       <AnimatePresence>
