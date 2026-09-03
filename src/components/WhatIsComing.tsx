@@ -260,13 +260,43 @@ export default function WhatIsComing() {
               <AnimatePresence mode="wait">
                 <motion.span
                   key={roleIndex}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -20, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="inline-block"
+                  className="inline-flex justify-center flex-wrap"
+                  style={{ perspective: 600 }}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: { staggerChildren: 0.028 },
+                    },
+                    exit: {
+                      opacity: 0,
+                      transition: { staggerChildren: 0.015, staggerDirection: -1 },
+                    },
+                  }}
                 >
-                  {roles[roleIndex]}
+                  {roles[roleIndex].split("").map((ch, i) => (
+                    <motion.span
+                      key={i}
+                      variants={{
+                        hidden: shouldReduceMotion
+                          ? { opacity: 0 }
+                          : { y: 18, opacity: 0, rotateX: 60 },
+                        visible: shouldReduceMotion
+                          ? { opacity: 1 }
+                          : { y: 0, opacity: 1, rotateX: 0, transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } },
+                        exit: shouldReduceMotion
+                          ? { opacity: 0 }
+                          : { y: -18, opacity: 0, rotateX: -60, transition: { duration: 0.2, ease: "easeIn" } },
+                      }}
+                      className="inline-block"
+                      style={{ transformStyle: "preserve-3d" }}
+                    >
+                      {ch === " " ? "\u00A0" : ch}
+                    </motion.span>
+                  ))}
                 </motion.span>
               </AnimatePresence>
             </span>

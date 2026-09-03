@@ -255,16 +255,36 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
           </motion.div>
         </div>
 
-        {/* Brand Name using VT323 for giant beautiful pixel stamp */}
-        <motion.h1
+        {/* Brand Name with Staggered Entrance & Interactive Wave Typography Motion */}
+        <h1
           id="hero-title"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="font-display text-7xl sm:text-9xl md:text-[10rem] font-bold tracking-tight text-amber-orange leading-none select-none pixel-text-shadow mb-4"
+          aria-label="Stackcamp"
+          className="font-display text-7xl sm:text-9xl md:text-[10rem] font-bold tracking-tight text-amber-orange leading-none select-none pixel-text-shadow mb-4 flex justify-center items-center overflow-visible"
         >
-          Stackcamp
-        </motion.h1>
+          {"Stackcamp".split("").map((char, index) => (
+            <motion.span
+              key={index}
+              aria-hidden="true"
+              initial={shouldReduceMotion ? undefined : { opacity: 0, y: -25, rotate: index % 2 === 0 ? -3 : 3 }}
+              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, rotate: 0 }}
+              transition={shouldReduceMotion ? undefined : {
+                duration: 0.5,
+                delay: index * 0.045,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              whileHover={shouldReduceMotion ? undefined : {
+                y: -14,
+                scale: 1.15,
+                rotate: index % 2 === 0 ? 4 : -4,
+                color: "#ffe082",
+                transition: { type: "spring", stiffness: 450, damping: 15 },
+              }}
+              className="inline-block cursor-pointer transition-colors duration-150"
+            >
+              {char}
+            </motion.span>
+          ))}
+        </h1>
 
         {/* Retro Dialog box from our Cute Logo Fox Mascot Speaking */}
         <motion.div
