@@ -1,5 +1,12 @@
 import { useState, FormEvent, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { 
+  motion, 
+  AnimatePresence, 
+  useMotionValue, 
+  useSpring, 
+  useTransform, 
+  useReducedMotion 
+} from "motion/react";
 import { 
   Contact, 
   Rocket, 
@@ -16,6 +23,28 @@ import { DeveloperBadge, GuestbookEntry } from "../types";
 
 export default function WhatIsComing() {
   const [activeTab, setActiveTab] = useState<string>("profiles");
+  const shouldReduceMotion = useReducedMotion();
+
+  // 3D Motion Graphics Isometric Tilt for Passport Card
+  const passMouseX = useMotionValue(0);
+  const passMouseY = useMotionValue(0);
+
+  const passRotateX = useSpring(useTransform(passMouseY, [-0.5, 0.5], [12, -12]), { stiffness: 260, damping: 22 });
+  const passRotateY = useSpring(useTransform(passMouseX, [-0.5, 0.5], [-15, 15]), { stiffness: 260, damping: 22 });
+
+  const handlePassportMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    passMouseX.set(x);
+    passMouseY.set(y);
+  };
+
+  const handlePassportMouseLeave = () => {
+    passMouseX.set(0);
+    passMouseY.set(0);
+  };
 
   // Word rotator state
   const roles = [
@@ -380,21 +409,39 @@ export default function WhatIsComing() {
                         </div>
                       </div>
 
-                      {/* Passport Preview card styled uniquely */}
-                      <div className="border-4 border-dashed border-black/40 p-2 sm:p-4 flex justify-center bg-black/30">
-                        <div className="relative w-full max-w-[288px] bg-cocoa-950 border-4 border-amber-orange p-3 sm:p-4 overflow-hidden shadow-2xl font-mono text-xs">
-                          {/* Top heading strip inside passport */}
-                          <div className="absolute top-0 right-0 bg-amber-orange text-cocoa-950 text-[8px] px-2.5 py-1 font-pixel font-bold uppercase">
+                      {/* Passport Preview card styled uniquely in 3D Isometric Diorama */}
+                      <div 
+                        className="border-4 border-dashed border-black/40 p-2 sm:p-4 flex justify-center bg-black/30"
+                        style={{ perspective: 900 }}
+                        onMouseMove={handlePassportMouseMove}
+                        onMouseLeave={handlePassportMouseLeave}
+                      >
+                        <motion.div 
+                          style={{
+                            rotateX: shouldReduceMotion ? 0 : passRotateX,
+                            rotateY: shouldReduceMotion ? 0 : passRotateY,
+                            transformStyle: "preserve-3d",
+                          }}
+                          className="relative w-full max-w-[288px] bg-cocoa-950 border-4 border-amber-orange p-3 sm:p-4 overflow-hidden shadow-2xl font-mono text-xs transition-shadow hover:shadow-[0_20px_35px_rgba(234,127,67,0.25)] cursor-default"
+                        >
+                          {/* Top heading strip inside passport (3D Layer 30px) */}
+                          <div 
+                            className="absolute top-0 right-0 bg-amber-orange text-cocoa-950 text-[8px] px-2.5 py-1 font-pixel font-bold uppercase"
+                            style={{ transform: "translateZ(30px)" }}
+                          >
                             STCamp-PASS
                           </div>
                           
-                          <div className="flex gap-4 items-center">
-                            {/* Sprite frame */}
-                            <div className="w-16 h-16 bg-logo-brown border-2 border-black flex items-center justify-center text-3xl shadow-inner relative">
+                          <div className="flex gap-4 items-center" style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }}>
+                            {/* Sprite frame (3D Layer 26px) */}
+                            <div 
+                              className="w-16 h-16 bg-logo-brown border-2 border-black flex items-center justify-center text-3xl shadow-inner relative"
+                              style={{ transform: "translateZ(26px)" }}
+                            >
                               {badgeCharacter}
                             </div>
                             
-                            <div className="space-y-1 flex-1 select-none font-mono">
+                            <div className="space-y-1 flex-1 select-none font-mono" style={{ transform: "translateZ(18px)" }}>
                               <p className="text-[8px] text-amber-orange font-pixel">PASSPORT VERIFIED</p>
                               <h5 className="font-extrabold text-warm-beige text-base truncate uppercase">{badgeName || "CAMPER"}</h5>
                               <p className="text-sage-text text-xs italic">{badgeRole}</p>
@@ -402,8 +449,8 @@ export default function WhatIsComing() {
                             </div>
                           </div>
                           
-                          {/* Skills strip */}
-                          <div className="mt-4 pt-3 border-t-2 border-black/60">
+                          {/* Skills strip (3D Layer 14px) */}
+                          <div className="mt-4 pt-3 border-t-2 border-black/60" style={{ transform: "translateZ(14px)" }}>
                             <p className="text-[9px] font-pixel text-amber-orange mb-1.5 uppercase">CAMPSITE ABILITIES</p>
                             <div className="flex flex-wrap gap-1.5">
                               {badgeSkills.map((s) => (
@@ -418,8 +465,8 @@ export default function WhatIsComing() {
                             </div>
                           </div>
 
-                          {/* Skill item add box */}
-                          <form onSubmit={handleAddSkill} className="mt-4 flex gap-1.5 pt-2">
+                          {/* Skill item add box (3D Layer 14px) */}
+                          <form onSubmit={handleAddSkill} className="mt-4 flex gap-1.5 pt-2" style={{ transform: "translateZ(14px)" }}>
                             <input
                               type="text"
                               value={newSkill}
@@ -434,7 +481,7 @@ export default function WhatIsComing() {
                               ADD
                             </button>
                           </form>
-                        </div>
+                        </motion.div>
                       </div>
                     </motion.div>
                   )}

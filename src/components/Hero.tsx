@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { 
+  motion, 
+  AnimatePresence, 
+  useReducedMotion, 
+  useMotionValue, 
+  useSpring, 
+  useTransform 
+} from "motion/react";
 import { Flame, Compass, Calendar, ArrowDown, Sparkles } from "lucide-react";
 import { PixelFoxLogo } from "./Navbar";
 
@@ -21,6 +28,27 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
   const [embers, setEmbers] = useState<Ember[]>([]);
   const DialogText = "Welcome to Stackcamp! 🦊 Leave the social media noise behind and check into a low-stress woodland campsite with other independent builders. Grab some cocoa!";
   const [typedText, setTypedText] = useState(shouldReduceMotion ? DialogText : "");
+
+  // 3D Motion Graphics Parallax & Tilt
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [14, -14]), { stiffness: 240, damping: 20 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-16, 16]), { stiffness: 240, damping: 20 });
+
+  const handleBadgeMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleBadgeMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   useEffect(() => {
     if (shouldReduceMotion) {
@@ -117,16 +145,115 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
       {/* Main Content Container */}
       <div className="relative z-20 max-w-4xl mx-auto px-6 text-center mt-12 md:mt-16">
         
-        {/* Rounded Retro Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -15 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-3 px-4 py-2 bg-logo-brown border-2 border-black retro-shadow-sm text-[#eadec9] text-xs font-mono mb-8"
+        {/* 3D Motion Graphics Isometric Campsite Diorama */}
+        <div
+          className="mb-8 inline-block"
+          style={{ perspective: 900 }}
+          onMouseMove={handleBadgeMouseMove}
+          onMouseLeave={handleBadgeMouseLeave}
         >
-          <span className="w-2.5 h-2.5 bg-amber-orange border border-black animate-pulse" />
-          <span className="text-[10px] tracking-wide font-pixel text-cream select-none">FOUNDED BY:</span>
-          <span className="text-amber-orange font-bold text-xs">RonanStack24</span>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -16, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              rotateX: shouldReduceMotion ? 0 : rotateX,
+              rotateY: shouldReduceMotion ? 0 : rotateY,
+              transformStyle: "preserve-3d",
+            }}
+            whileHover={shouldReduceMotion ? undefined : { scale: 1.04 }}
+            className="relative inline-flex items-center gap-3.5 px-4 py-2 bg-cocoa-900/95 border-2 border-black retro-shadow text-warm-beige select-none group cursor-pointer transition-colors hover:border-amber-orange backdrop-blur-xs"
+            onClick={onExploreClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExploreClick(); }}
+            aria-label="Campsite is active. Click to step into the clearing"
+          >
+            {/* 3D Depth Layer -12px: Ambient Hearth Glow */}
+            <div 
+              className="absolute inset-0 bg-amber-orange/20 blur-md pointer-events-none group-hover:bg-amber-orange/40 transition-colors"
+              style={{ transform: "translateZ(-12px)" }}
+            />
+
+            {/* 3D Campfire Vignette (Z-22px) */}
+            <div 
+              className="relative w-7 h-7 flex items-center justify-center flex-shrink-0"
+              style={{ transform: "translateZ(22px)", transformStyle: "preserve-3d" }}
+            >
+              <svg
+                className="w-7 h-7 crisp-pixel relative z-10"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Crossed Wood Logs at Base (Z-8px) */}
+                <g style={{ transform: "translateZ(8px)" }}>
+                  <rect x="2" y="13" width="12" height="2" fill="#211412" />
+                  <rect x="3" y="12" width="10" height="1" fill="#5c3826" />
+                  <rect x="4" y="11" width="8" height="1" fill="#754c38" />
+                </g>
+
+                {/* Rising Animated 3D Sparks (Z-32px) */}
+                {!shouldReduceMotion && (
+                  <g style={{ transform: "translateZ(32px)" }}>
+                    <motion.rect
+                      animate={{ y: [0, -5, -9], opacity: [0, 1, 0], x: [0, -1, 1] }}
+                      transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
+                      x="5" y="6" width="1" height="1" fill="#fca859"
+                    />
+                    <motion.rect
+                      animate={{ y: [0, -6, -10], opacity: [0, 1, 0], x: [0, 1, -1] }}
+                      transition={{ duration: 2.1, repeat: Infinity, delay: 0.4, ease: "easeOut" }}
+                      x="10" y="5" width="1" height="1" fill="#ffa16c"
+                    />
+                    <motion.rect
+                      animate={{ y: [0, -7, -11], opacity: [0, 1, 0] }}
+                      transition={{ duration: 1.8, repeat: Infinity, delay: 0.8, ease: "easeOut" }}
+                      x="8" y="4" width="1" height="1" fill="#fff2dd"
+                    />
+                  </g>
+                )}
+
+                {/* Multi-layered Animated 3D Flickering Flame (Z-24px) */}
+                <motion.g
+                  style={{ transformOrigin: "bottom center", transform: "translateZ(24px)" }}
+                  animate={shouldReduceMotion ? undefined : {
+                    scaleY: [1, 1.15, 0.94, 1.1, 1],
+                    scaleX: [1, 0.95, 1.05, 0.98, 1],
+                  }}
+                  transition={{ duration: 0.85, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  {/* Outer Flame (Orange) */}
+                  <rect x="5" y="8" width="6" height="3" fill="#ea7f43" />
+                  <rect x="6" y="6" width="4" height="3" fill="#ea7f43" />
+                  <rect x="7" y="4" width="2" height="3" fill="#ea7f43" />
+
+                  {/* Mid Flame (Yellow-Gold) */}
+                  <rect x="6" y="8" width="4" height="2" fill="#fca859" />
+                  <rect x="7" y="6" width="2" height="3" fill="#fca859" />
+
+                  {/* Core Flame (Warm White) */}
+                  <rect x="7" y="7" width="2" height="2" fill="#fff59d" />
+                </motion.g>
+              </svg>
+            </div>
+
+            {/* 3D Foreground Text & Steaming Mug (Z-16px) */}
+            <div 
+              className="flex items-center gap-2 font-mono"
+              style={{ transform: "translateZ(16px)" }}
+            >
+              <span className="font-pixel text-[9px] text-amber-orange tracking-wider uppercase">
+                COZY CAMPSITE
+              </span>
+              <span className="text-sage-text opacity-40 text-[9px]" aria-hidden="true">•</span>
+              <span className="text-xs text-warm-beige tracking-tight font-medium flex items-center gap-1.5">
+                The fire is warm, grab some cocoa
+                <span className="inline-block transform group-hover:rotate-12 transition-transform duration-300">☕</span>
+              </span>
+            </div>
+          </motion.div>
+        </div>
 
         {/* Brand Name using VT323 for giant beautiful pixel stamp */}
         <motion.h1
