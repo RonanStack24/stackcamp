@@ -1,4 +1,10 @@
-import { motion } from "motion/react";
+import { 
+  motion, 
+  useReducedMotion, 
+  useMotionValue, 
+  useSpring, 
+  useTransform 
+} from "motion/react";
 import {
   BadgeCheck,
   BookOpen,
@@ -9,15 +15,28 @@ import {
   Rocket,
   ShieldCheck,
   Users,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 
-const steps = [
+interface StepItem {
+  icon: typeof BadgeCheck;
+  number: string;
+  title: string;
+  description: string;
+  badge: string;
+  emoji: string;
+}
+
+const steps: StepItem[] = [
   {
     icon: BadgeCheck,
     number: "01",
     title: "Claim your cabin key",
     description:
       "Join the camp, choose your builder type, and create a passport that shows what you make and what you are learning.",
+    badge: "STAGE 01 • ENTRY",
+    emoji: "🔑",
   },
   {
     icon: Hammer,
@@ -25,6 +44,8 @@ const steps = [
     title: "Share the work",
     description:
       "Post projects and small build logs. Progress, experiments, and lessons learned are all welcome around the fire.",
+    badge: "STAGE 02 • BUILD",
+    emoji: "🪵",
   },
   {
     icon: Users,
@@ -32,8 +53,104 @@ const steps = [
     title: "Find your crew",
     description:
       "Enter a specialist cabin, ask for feedback, or team up with another camper without the pressure of a noisy feed.",
+    badge: "STAGE 03 • GUILD",
+    emoji: "⛺",
   },
 ];
+
+// Interactive 3D Isometric Parallax Step Card
+function Step3DCard({ step, index }: { step: StepItem; index: number }) {
+  const shouldReduceMotion = useReducedMotion();
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [12, -12]), { stiffness: 240, damping: 22 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-14, 14]), { stiffness: 240, damping: 22 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  const Icon = step.icon;
+
+  return (
+    <div
+      style={{ perspective: 1000 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="h-full"
+    >
+      <motion.article
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ delay: index * 0.12, duration: 0.5 }}
+        style={{
+          rotateX: shouldReduceMotion ? 0 : rotateX,
+          rotateY: shouldReduceMotion ? 0 : rotateY,
+          transformStyle: "preserve-3d",
+        }}
+        whileHover={shouldReduceMotion ? undefined : { scale: 1.03 }}
+        className="relative border-4 border-black bg-cocoa-950 p-6 sm:p-7 retro-shadow overflow-hidden h-full flex flex-col justify-between group transition-colors hover:border-amber-orange cursor-default"
+      >
+        {/* Ambient radial glow on hover (Z-10px) */}
+        <div 
+          className="absolute -top-10 -right-10 w-32 h-32 bg-amber-orange/10 rounded-full blur-xl pointer-events-none group-hover:bg-amber-orange/25 transition-colors"
+          style={{ transform: "translateZ(-10px)" }}
+        />
+
+        {/* Massive Giant Background Step Number (Z-5px) */}
+        <span 
+          className="absolute right-3 top-2 font-display text-6xl sm:text-7xl font-bold text-cocoa-800/40 select-none group-hover:text-amber-orange/20 transition-colors pointer-events-none"
+          style={{ transform: "translateZ(-5px)" }}
+        >
+          {step.number}
+        </span>
+
+        {/* Top meta strip with Stage pill & emoji (Z-22px) */}
+        <div className="flex items-center justify-between mb-6 relative z-10" style={{ transform: "translateZ(22px)" }}>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 bg-amber-orange rounded-full animate-pulse" />
+            <span className="font-pixel text-[9px] text-amber-orange tracking-wider uppercase">
+              {step.badge}
+            </span>
+          </div>
+          <span className="text-xl transform group-hover:scale-125 transition-transform duration-300">
+            {step.emoji}
+          </span>
+        </div>
+
+        {/* Icon & Title block (Z-30px) */}
+        <div style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
+          <div className="mb-5 flex h-14 w-14 items-center justify-center border-3 border-black bg-logo-brown text-amber-orange group-hover:bg-amber-orange group-hover:text-cocoa-950 transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover:translate-x-0.5 group-hover:translate-y-0.5">
+            <Icon className="h-7 w-7 transform group-hover:rotate-6 transition-transform" />
+          </div>
+
+          <h3 className="mb-3 font-display text-3xl sm:text-4xl font-bold text-warm-beige group-hover:text-amber-orange transition-colors">
+            {step.title}
+          </h3>
+        </div>
+
+        {/* Description & Trail footer (Z-16px) */}
+        <div className="mt-4 pt-4 border-t-2 border-black/40" style={{ transform: "translateZ(16px)" }}>
+          <p className="text-xs sm:text-sm leading-relaxed text-sage-text font-mono">
+            {step.description}
+          </p>
+        </div>
+      </motion.article>
+    </div>
+  );
+}
 
 const roadmap = [
   {
@@ -83,49 +200,95 @@ const questions = [
 ];
 
 export default function CommunityGuide() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <>
-      <section className="relative z-10 border-t-4 border-black bg-cocoa-900/80 py-24">
+      <section id="how-it-works" className="relative z-10 border-t-4 border-black bg-cocoa-900/80 py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mx-auto mb-14 max-w-2xl space-y-4 text-center">
-            <span className="font-pixel text-[10px] uppercase tracking-widest text-amber-orange">
-              Camper field guide
-            </span>
-            <h2 className="font-display text-5xl font-bold text-warm-beige md:text-6xl">
-              How Stackcamp works
+          
+          {/* Header Block with 3D Kinetic Typography */}
+          <div className="mx-auto mb-16 max-w-3xl space-y-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-cocoa-950 border-2 border-black retro-shadow-sm mb-2">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="font-pixel text-[9px] uppercase tracking-widest text-amber-orange flex items-center gap-1.5">
+                <Sparkles className="w-3 h-3 text-amber-orange" />
+                CAMPER FIELD GUIDE • 3 SIMPLE STAGES
+              </span>
+            </div>
+
+            {/* 3D Kinetic Typography Heading */}
+            <h2 
+              id="how-it-works-title"
+              aria-label="How Stackcamp works"
+              className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-warm-beige flex flex-wrap justify-center items-center gap-x-3.5 gap-y-1 select-none overflow-visible leading-none"
+            >
+              <span className="inline-flex">
+                {"How".split("").map((char, i) => (
+                  <motion.span
+                    key={`how-${i}`}
+                    aria-hidden="true"
+                    whileHover={shouldReduceMotion ? undefined : {
+                      y: -10,
+                      scale: 1.2,
+                      rotate: -4,
+                      color: "#fca859",
+                      transition: { type: "spring", stiffness: 450, damping: 14 }
+                    }}
+                    className="inline-block cursor-pointer transition-colors"
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+              </span>
+              <span className="inline-flex text-amber-orange pixel-text-shadow">
+                {"Stackcamp".split("").map((char, i) => (
+                  <motion.span
+                    key={`sc-${i}`}
+                    aria-hidden="true"
+                    whileHover={shouldReduceMotion ? undefined : {
+                      y: -12,
+                      scale: 1.25,
+                      rotate: i % 2 === 0 ? 5 : -5,
+                      color: "#fff59d",
+                      transition: { type: "spring", stiffness: 450, damping: 14 }
+                    }}
+                    className="inline-block cursor-pointer transition-colors"
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+              </span>
+              <span className="inline-flex">
+                {"works".split("").map((char, i) => (
+                  <motion.span
+                    key={`works-${i}`}
+                    aria-hidden="true"
+                    whileHover={shouldReduceMotion ? undefined : {
+                      y: -10,
+                      scale: 1.2,
+                      rotate: 4,
+                      color: "#fca859",
+                      transition: { type: "spring", stiffness: 450, damping: 14 }
+                    }}
+                    className="inline-block cursor-pointer transition-colors"
+                  >
+                    {char}
+                  </motion.span>
+                ))}
+              </span>
             </h2>
-            <p className="text-sm leading-relaxed text-sage-text md:text-base">
-              Bring what you are building, meet people who care about the craft, and make steady progress at your own pace.
+
+            <p className="text-sm leading-relaxed text-sage-text md:text-base font-mono max-w-xl mx-auto">
+              Bring what you are building, meet creators who respect the craft, and make steady progress without the noise of algorithms.
             </p>
           </div>
 
+          {/* 3D Isometric Step Cards Grid */}
           <div className="grid gap-6 md:grid-cols-3">
-            {steps.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <motion.article
-                  key={step.number}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ delay: index * 0.1 }}
-                  className="relative border-4 border-black bg-cocoa-950 p-6 retro-shadow"
-                >
-                  <span className="absolute right-4 top-4 font-display text-4xl text-cocoa-700">
-                    {step.number}
-                  </span>
-                  <div className="mb-6 flex h-12 w-12 items-center justify-center border-2 border-black bg-logo-brown text-amber-orange">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="mb-3 font-display text-3xl font-bold text-warm-beige">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-sage-text">
-                    {step.description}
-                  </p>
-                </motion.article>
-              );
-            })}
+            {steps.map((step, index) => (
+              <Step3DCard key={step.number} step={step} index={index} />
+            ))}
           </div>
         </div>
       </section>
