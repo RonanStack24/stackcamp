@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Flame, MessageSquare, Edit3, Send, Sparkles, Footprints, Heart } from "lucide-react";
 import { GuestbookEntry } from "../types";
 
@@ -8,6 +8,8 @@ interface PixelFireProps {
   intensity: number;
 }
 export function PixelCampfireSVG({ intensity }: PixelFireProps) {
+  const shouldReduceMotion = useReducedMotion();
+
   // We can write an SVG representing an adorable 16x16 pixel-grid campfire
   // It changes size and colors dynamically based on the intensity state
   return (
@@ -18,7 +20,7 @@ export function PixelCampfireSVG({ intensity }: PixelFireProps) {
       xmlns="http://www.w3.org/2000/svg"
     >
       {/* Dynamic Animated Spark Particles surrounding the campfire */}
-      {intensity >= 3 && (
+      {intensity >= 3 && !shouldReduceMotion && (
         <g>
           {/* Spark Left */}
           <motion.rect
@@ -56,8 +58,8 @@ export function PixelCampfireSVG({ intensity }: PixelFireProps) {
         <motion.g
           key={intensity}
           initial={{ scaleY: 0.7, opacity: 0.5 }}
-          animate={{ scaleY: [1.0, 1.08, 0.98, 1.04, 1.0], opacity: 1 }}
-          transition={{ repeat: Infinity, duration: 0.8 / (intensity * 0.4), ease: "easeInOut" }}
+          animate={shouldReduceMotion ? { scaleY: 1, opacity: 1 } : { scaleY: [1.0, 1.08, 0.98, 1.04, 1.0], opacity: 1 }}
+          transition={shouldReduceMotion ? { duration: 0.2 } : { repeat: Infinity, duration: 0.8 / (intensity * 0.4), ease: "easeInOut" }}
           className="origin-bottom"
         >
           {/* Level 1: Weak Amber Core */}
@@ -273,7 +275,7 @@ export default function InteractiveCampfire() {
             
             <div className="space-y-3 w-full">
               <span className="font-pixel text-[10px] tracking-widest uppercase text-amber-orange flex items-center justify-center gap-2">
-                <Flame className="w-4 h-4 animate-bounce" /> Camping ground center
+                <Flame className="w-4 h-4 animate-pulse" /> Camping ground center
               </span>
               <h2 className="font-display text-4xl md:text-5xl font-bold text-warm-beige">
                 The Cozy Campfire

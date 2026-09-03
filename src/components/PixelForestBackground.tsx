@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useTheme } from "./ThemeContext";
 
@@ -15,10 +15,13 @@ interface Particle {
 export default function PixelForestBackground() {
   const [particles, setParticles] = useState<Particle[]>([]);
   const { theme } = useTheme();
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     // Generate particles with different properties based on theme
-    const list = Array.from({ length: 35 }).map((_, i) => ({
+    // If reduced motion is requested, generate fewer static ambient dots
+    const count = shouldReduceMotion ? 12 : 24;
+    const list = Array.from({ length: count }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
@@ -28,7 +31,7 @@ export default function PixelForestBackground() {
       type: theme as "firefly" | "sakura",
     }));
     setParticles(list);
-  }, [theme]);
+  }, [theme, shouldReduceMotion]);
 
   // Theme-specific colors
   const skyGradient = theme === "dark" 
@@ -110,66 +113,88 @@ export default function PixelForestBackground() {
 
       {/* Particles Layer (Fireflies or Sakura Petals) */}
       <AnimatePresence>
-        {particles.map((p) => (
-          <motion.div
-            key={`${theme}-${p.id}`} // Force re-render of particles on theme change
-            initial={{
-              x: `${p.x}vw`,
-              y: p.type === "sakura" ? "-10vh" : `${p.y}vh`, // Sakura starts at top, fireflies random
-              opacity: 0,
-              scale: 0.5,
-              rotate: p.type === "sakura" ? 0 : undefined,
-            }}
-            animate={
-              p.type === "firefly" 
-                ? {
-                    x: [
-                      `${p.x}vw`,
-                      `${p.x + Math.sin(p.id) * 6}vw`,
-                      `${p.x - Math.cos(p.id) * 6}vw`,
-                      `${p.x}vw`,
-                    ],
-                    y: [
-                      `${p.y}vh`,
-                      `${p.y - 10}vh`,
-                      `${p.y - 5}vh`,
-                      `${p.y}vh`,
-                    ],
-                    opacity: [0, 0.3, 0.85, 0.3, 0],
-                    scale: [0.5, 1, 1.15, 0.75, 0.5],
-                  }
-                : {
-                    // Sakura drift down slowly
-                    x: [
-                      `${p.x}vw`,
-                      `${p.x + Math.sin(p.id) * 10}vw`,
-                      `${p.x - Math.cos(p.id) * 10}vw`,
-                    ],
-                    y: ["-10vh", "50vh", "110vh"], // Fall past the bottom
-                    opacity: [0, 0.8, 1, 0.8, 0],
-                    scale: [0.8, 1.2, 1, 0.8, 0.5],
-                    rotate: [0, 180, 360], // Sakura petal spin
-                  }
-            }
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{
-              duration: p.duration,
-              repeat: Infinity,
-              delay: p.delay,
-              ease: p.type === "firefly" ? "easeInOut" : "linear",
-            }}
-            className={`absolute rounded-none border border-black ${
-              p.type === "firefly" ? "bg-[#adff2f]" : "bg-[#ffb7c5]"
-            }`}
-            style={{
-              width: `${p.size}px`,
-              height: p.type === "sakura" ? `${p.size * 1.5}px` : `${p.size}px`, // Petals are slightly rectangular
-              boxShadow: p.type === "firefly" 
-                ? "0 0 10px 2px rgba(173, 255, 47, 0.75)" 
-                : "0 0 8px 2px rgba(255, 183, 197, 0.4)",
-            }}
-          />
-        ))}
+        {particles.map((p) => {
+          if (shouldReduceMotion) {
+            return (
+              <div
+                key={`${theme}-${p.id}`}
+                className={`absolute rounded-none border border-black opacity-40 ${
+                  p.type === "firefly" ? "bg-[#adff2f]" : "bg-[#ffb7c5]"
+                }`}
+                style={{
+                  left: `${p.x}vw`,
+                  top: `${p.y}vh`,
+                  width: `${p.size}px`,
+                  height: p.type === "sakura" ? `${p.size * 1.5}px` : `${p.size}px`,
+                  boxShadow: p.type === "firefly" 
+                    ? "0 0 6px 1px rgba(173, 255, 47, 0.4)" 
+                    : "0 0 6px 1px rgba(255, 183, 197, 0.3)",
+                }}
+              />
+            );
+          }
+
+          return (
+            <motion.div
+              key={`${theme}-${p.id}`} // Force re-render of particles on theme change
+              initial={{
+                x: `${p.x}vw`,
+                y: p.type === "sakura" ? "-10vh" : `${p.y}vh`, // Sakura starts at top, fireflies random
+                opacity: 0,
+                scale: 0.5,
+                rotate: p.type === "sakura" ? 0 : undefined,
+              }}
+              animate={
+                p.type === "firefly" 
+                  ? {
+                      x: [
+                        `${p.x}vw`,
+                        `${p.x + Math.sin(p.id) * 6}vw`,
+                        `${p.x - Math.cos(p.id) * 6}vw`,
+                        `${p.x}vw`,
+                      ],
+                      y: [
+                        `${p.y}vh`,
+                        `${p.y - 10}vh`,
+                        `${p.y - 5}vh`,
+                        `${p.y}vh`,
+                      ],
+                      opacity: [0, 0.3, 0.85, 0.3, 0],
+                      scale: [0.5, 1, 1.15, 0.75, 0.5],
+                    }
+                  : {
+                      // Sakura drift down slowly
+                      x: [
+                        `${p.x}vw`,
+                        `${p.x + Math.sin(p.id) * 10}vw`,
+                        `${p.x - Math.cos(p.id) * 10}vw`,
+                      ],
+                      y: ["-10vh", "50vh", "110vh"], // Fall past the bottom
+                      opacity: [0, 0.8, 1, 0.8, 0],
+                      scale: [0.8, 1.2, 1, 0.8, 0.5],
+                      rotate: [0, 180, 360], // Sakura petal spin
+                    }
+              }
+              exit={{ opacity: 0, scale: 0 }}
+              transition={{
+                duration: p.duration,
+                repeat: Infinity,
+                delay: p.delay,
+                ease: p.type === "firefly" ? "easeInOut" : "linear",
+              }}
+              className={`absolute rounded-none border border-black ${
+                p.type === "firefly" ? "bg-[#adff2f]" : "bg-[#ffb7c5]"
+              }`}
+              style={{
+                width: `${p.size}px`,
+                height: p.type === "sakura" ? `${p.size * 1.5}px` : `${p.size}px`, // Petals are slightly rectangular
+                boxShadow: p.type === "firefly" 
+                  ? "0 0 10px 2px rgba(173, 255, 47, 0.75)" 
+                  : "0 0 8px 2px rgba(255, 183, 197, 0.4)",
+              }}
+            />
+          );
+        })}
       </AnimatePresence>
     </div>
   );

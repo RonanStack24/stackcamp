@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Flame, Compass, Calendar, ArrowDown, Sparkles } from "lucide-react";
 import { PixelFoxLogo } from "./Navbar";
 
@@ -17,13 +17,19 @@ interface Ember {
 }
 
 export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
+  const shouldReduceMotion = useReducedMotion();
   const [embers, setEmbers] = useState<Ember[]>([]);
-  const [typedText, setTypedText] = useState("");
   const DialogText = "Welcome to Stackcamp! 🦊 Leave the social media noise behind and check into a low-stress woodland campsite with other independent builders. Grab some cocoa!";
+  const [typedText, setTypedText] = useState(shouldReduceMotion ? DialogText : "");
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      setTypedText(DialogText);
+      return;
+    }
+
     // Generate a set of retro blocky ember particles that drift up
-    const newEmbers = Array.from({ length: 20 }).map((_, i) => ({
+    const newEmbers = Array.from({ length: 15 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
       size: Math.random() * 6 + 4, // 4px to 10px (blocky pixels!)
@@ -43,7 +49,7 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
     }, 28);
 
     return () => clearInterval(typingInterval);
-  }, []);
+  }, [shouldReduceMotion]);
 
   return (
     <section
@@ -64,30 +70,48 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
 
       {/* Retro Floating Pixel Embers */}
       <div id="hero-embers" className="absolute inset-x-0 bottom-0 top-1/3 overflow-hidden pointer-events-none z-10">
-        {embers.map((ember) => (
-          <motion.div
-            id={`ember-${ember.id}`}
-            key={ember.id}
-            initial={{ y: "100%", x: 0, opacity: 0 }}
-            animate={{
-              y: "-110%",
-              x: [0, Math.sin(ember.id) * 40, Math.sin(ember.id) * -20],
-              opacity: [0, 1, 0.8, 0],
-            }}
-            transition={{
-              duration: ember.duration,
-              repeat: Infinity,
-              delay: ember.delay,
-              ease: "linear",
-            }}
-            className="absolute bg-amber-orange border border-black shadow-[0_0_10px_rgba(234,127,67,0.5)]"
-            style={{
-              left: `${ember.left}%`,
-              width: `${ember.size}px`,
-              height: `${ember.size}px`,
-            }}
-          />
-        ))}
+        {embers.map((ember) => {
+          if (shouldReduceMotion) {
+            return (
+              <div
+                id={`ember-${ember.id}`}
+                key={ember.id}
+                className="absolute bg-amber-orange/40 border border-black"
+                style={{
+                  left: `${ember.left}%`,
+                  bottom: `${15 + (ember.id % 50)}%`,
+                  width: `${ember.size}px`,
+                  height: `${ember.size}px`,
+                }}
+              />
+            );
+          }
+
+          return (
+            <motion.div
+              id={`ember-${ember.id}`}
+              key={ember.id}
+              initial={{ y: "100%", x: 0, opacity: 0 }}
+              animate={{
+                y: "-110%",
+                x: [0, Math.sin(ember.id) * 40, Math.sin(ember.id) * -20],
+                opacity: [0, 1, 0.8, 0],
+              }}
+              transition={{
+                duration: ember.duration,
+                repeat: Infinity,
+                delay: ember.delay,
+                ease: "linear",
+              }}
+              className="absolute bg-amber-orange border border-black shadow-[0_0_10px_rgba(234,127,67,0.5)]"
+              style={{
+                left: `${ember.left}%`,
+                width: `${ember.size}px`,
+                height: `${ember.size}px`,
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Main Content Container */}
@@ -187,10 +211,10 @@ export default function Hero({ onExploreClick, onComingSoonClick }: HeroProps) {
         </motion.div>
       </div>
 
-      {/* Down Bounce Indicator */}
+      {/* Down Indicator */}
       <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
+        animate={shouldReduceMotion ? undefined : { y: [0, 6, 0] }}
+        transition={shouldReduceMotion ? undefined : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-sage-text opacity-70 hidden md:flex cursor-pointer z-30"
         onClick={onExploreClick}
       >

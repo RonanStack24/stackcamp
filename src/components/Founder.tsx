@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Award, Code, Hammer, MessageSquare, Terminal, Coffee, Sparkles, Map } from "lucide-react";
+import { Award, Code, Hammer, MessageSquare, Terminal, Coffee, Sparkles, Map, Figma, Palette, Layers } from "lucide-react";
 
 export default function Founder() {
   const foundersData = [
@@ -10,16 +10,14 @@ export default function Founder() {
       role: "Founder / Guild Leader",
       image: "/ronan.jpg",
       quote: "Stackcamp is our quiet corner of the internet—a place where builders can gather, share ideas, and create meaningful things together at their own pace.",
-      bio: "I am an aspiring network engineer dedicated to diving deep into routing protocols, network security, and building robust, scalable infrastructures.",
+      bio: "I am an aspiring software engineer specialized in frontend motion, Figma, and Framer.",
       skills: [
-        { name: "Routing & Switching", icon: <Terminal className="w-4 h-4" /> },
-        { name: "Network Security", icon: <Code className="w-4 h-4" /> },
-        { name: "Infrastructure Design", icon: <Map className="w-4 h-4" /> },
-        { name: "Packet Analysis", icon: <Sparkles className="w-4 h-4" /> },
-        { name: "Server Administration", icon: <Coffee className="w-4 h-4" /> },
-        { name: "Hobbyist Developer", icon: <Code className="w-4 h-4" /> },
-        { name: "Embedded Systems Design Engineer", icon: <Terminal className="w-4 h-4" /> },
-        { name: "Aspiring Security Architect", icon: <Sparkles className="w-4 h-4" /> },
+        { name: "Frontend Motion", icon: <Sparkles className="w-4 h-4" /> },
+        { name: "Figma UI/UX", icon: <Figma className="w-4 h-4" /> },
+        { name: "Framer & Motion", icon: <Layers className="w-4 h-4" /> },
+        { name: "React & TypeScript", icon: <Code className="w-4 h-4" /> },
+        { name: "Design Systems", icon: <Palette className="w-4 h-4" /> },
+        { name: "Creative Prototyping", icon: <Terminal className="w-4 h-4" /> },
       ],
       badge: "GUILD LEADER"
     },
