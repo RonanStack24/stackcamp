@@ -16,6 +16,7 @@ export default function Founder() {
       name: "Ronan Antoque",
       role: "Founder / Guild Leader",
       image: "/ronan.jpg",
+      objectPosition: "50% 15%",
       quote: "Stackcamp is our quiet corner of the internet—a place where builders can gather, share ideas, and create meaningful things together at their own pace.",
       bio: "I am an aspiring software engineer specialized in frontend motion, Figma, and Framer.",
       skills: [
@@ -33,6 +34,7 @@ export default function Founder() {
       name: "Cris Jumbo Caras",
       role: "Co-Founder / Architect",
       image: "/jumbo.jpg",
+      objectPosition: "top center",
       quote: "Every great camp needs a solid foundation. I design the real-world spaces where our community can gather.",
       bio: "A real-world architect focused on spatial design, blueprints, and bringing physical structures to life.",
       skills: [
@@ -46,6 +48,7 @@ export default function Founder() {
       name: "Aldrin Miller Basalo",
       role: "Co-Founder / Software Devs Backend Expert",
       image: "/aldrin.jpg",
+      objectPosition: "center center",
       quote: "A beautiful campsite relies on the unseen machinery beneath. I write the backend logic and databases that keep Stackcamp running seamlessly.",
       bio: "Obsessed with creating robust databases, secure API endpoints, and making sure the camp's backend runs smoothly.",
       skills: [
@@ -59,6 +62,7 @@ export default function Founder() {
       name: "Veejay Sumabong",
       role: "Co-Founder / Electronics Engineer",
       image: "/veejay.jpg",
+      objectPosition: "center center",
       quote: "I designed Stackcamp and wired the grid. They asked who made it possible God did.",
       bio: "Bridging the gap between the digital world and the physical world, bringing low-level engineering to our campsite.",
       skills: [
@@ -139,7 +143,12 @@ export default function Founder() {
                   }`}
                 >
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black overflow-hidden relative border-2 border-black">
-                    <img src={founder.image} alt={founder.name} className="w-full h-full object-cover" />
+                    <img
+                      src={founder.image}
+                      alt={founder.name}
+                      className="w-full h-full object-cover"
+                      style={{ objectPosition: founder.objectPosition || "center" }}
+                    />
                     {isSelected && (
                       <div className="absolute top-0 right-0 w-2 h-2 bg-amber-orange animate-pulse border-b border-l border-black" />
                     )}
@@ -206,7 +215,8 @@ export default function Founder() {
                       <img
                         src={activeFounder.image}
                         alt={activeFounder.name}
-                        className="w-full h-full object-cover object-top filter brightness-[0.9] contrast-[1.05] grayscale-[15%] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-500"
+                        className="w-full h-full object-cover filter brightness-[0.9] contrast-[1.05] grayscale-[15%] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-500"
+                        style={{ objectPosition: activeFounder.objectPosition || "center" }}
                       />
                       {/* Small gold token banner in picture corner */}
                       <div 
