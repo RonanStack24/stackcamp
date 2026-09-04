@@ -7,7 +7,247 @@ import {
   useTransform, 
   useReducedMotion 
 } from "motion/react";
-import { Award, Code, Hammer, MessageSquare, Terminal, Coffee, Sparkles, Map, Figma, Palette, Layers } from "lucide-react";
+import { Award, Code, Hammer, MessageSquare, Terminal, Coffee, Sparkles, Map, Figma, Palette, Layers, Flame } from "lucide-react";
+
+// Interactive Animated Mascot Fox Companion (Mochi) on Ronan's Card
+function FounderMochiCompanion({ speechIndex, onPoke }: { speechIndex: number; onPoke: () => void }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  const mochiFounderQuotes = [
+    "Yip! That's Ronan! 🦊✨",
+    "Frontend Motion & 3D Crafter! 💻",
+    "Hover Ronan's name for 3D bounce! 🎨",
+    "Stackcamp Guild Leader! 🌲",
+    "Poked! Mochi sends warm cocoa ☕",
+  ];
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.8, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.8, y: -10 }}
+      transition={{ duration: 0.3 }}
+      className="absolute -top-12 sm:-top-14 -right-2 sm:-right-4 z-40 flex flex-col items-end cursor-pointer select-none group"
+      onClick={onPoke}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onPoke(); }}
+      aria-label="Click to interact with Mochi on Ronan's card"
+      style={{ transform: "translateZ(55px)", transformStyle: "preserve-3d" }}
+    >
+      {/* Speech Balloon */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={speechIndex}
+          initial={{ opacity: 0, y: 6, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -4, scale: 0.9 }}
+          transition={{ duration: 0.2 }}
+          className="relative mb-1.5 mr-1 px-3 py-1 bg-cocoa-950 border-2 border-black retro-shadow-sm font-mono text-[10px] text-warm-beige whitespace-nowrap flex items-center gap-1.5 rounded"
+        >
+          <span className="text-amber-orange font-pixel text-[8px] flex items-center gap-1">
+            <Sparkles className="w-2.5 h-2.5 text-amber-orange animate-spin" /> MOCHI:
+          </span>
+          <span className="font-bold">{mochiFounderQuotes[speechIndex % mochiFounderQuotes.length]}</span>
+          {/* Balloon pointer downward */}
+          <div className="absolute -bottom-1 right-5 w-2 h-2 bg-cocoa-950 border-r-2 border-b-2 border-black rotate-45 pointer-events-none" />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Mochi Frame */}
+      <motion.div
+        whileHover={shouldReduceMotion ? undefined : { scale: 1.12, rotate: -3 }}
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.92, rotate: 6 }}
+        className="relative w-14 h-14 sm:w-16 sm:h-16 bg-logo-brown border-3 border-black retro-shadow p-1 rounded-md flex items-center justify-center overflow-visible group-hover:border-amber-orange transition-colors"
+      >
+        {/* Hearth Glow */}
+        <div className="absolute inset-0 bg-amber-orange/30 rounded-md filter blur-[2px] group-hover:bg-amber-orange/60 transition-colors" />
+
+        <svg 
+          className="w-full h-full crisp-pixel relative z-10 select-none overflow-visible" 
+          viewBox="0 0 32 32" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="2" y="2" width="28" height="28" fill="#201311" rx="2" />
+          
+          {/* Twinkling Fireflies */}
+          {!shouldReduceMotion && (
+            <>
+              <motion.rect
+                animate={{ opacity: [0.2, 1, 0.2] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                x="6" y="6" width="1" height="1" fill="#fff59d"
+              />
+              <motion.rect
+                animate={{ opacity: [0.2, 1, 0.2] }}
+                transition={{ duration: 2.1, repeat: Infinity, delay: 0.5, ease: "easeInOut" }}
+                x="25" y="8" width="1" height="1" fill="#fff59d"
+              />
+            </>
+          )}
+
+          {/* Tiny Campfire Left */}
+          <rect x="5" y="23" width="5" height="1" fill="#5c3826" />
+          <rect x="6" y="22" width="3" height="1" fill="#754c38" />
+          {!shouldReduceMotion ? (
+            <motion.g
+              animate={{ scaleY: [1, 1.3, 0.9, 1.2, 1] }}
+              transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+              style={{ transformOrigin: "7px 23px" }}
+            >
+              <rect x="6" y="19" width="3" height="3" fill="#ea7f43" />
+              <rect x="7" y="18" width="1" height="3" fill="#ffb74d" />
+              <rect x="7" y="20" width="1" height="1" fill="#ffffff" />
+            </motion.g>
+          ) : (
+            <g>
+              <rect x="6" y="19" width="3" height="3" fill="#ea7f43" />
+              <rect x="7" y="18" width="1" height="3" fill="#ffb74d" />
+              <rect x="7" y="20" width="1" height="1" fill="#ffffff" />
+            </g>
+          )}
+
+          {/* Animated Fox Tail */}
+          <motion.g
+            animate={shouldReduceMotion ? undefined : { rotate: [-8, 18, -8] }}
+            transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "21px 22px" }}
+          >
+            <rect x="23" y="17" width="4" height="4" fill="#ea7f43" />
+            <rect x="24" y="15" width="3" height="3" fill="#ea7f43" />
+            <rect x="25" y="14" width="2" height="2" fill="#ffffff" />
+          </motion.g>
+
+          {/* Fox Body & Head */}
+          <motion.g
+            animate={shouldReduceMotion ? undefined : { y: [0, -1.2, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {/* Ears Twitch */}
+            <motion.g
+              animate={shouldReduceMotion ? undefined : { rotate: [0, -6, 6, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, delay: 0.3, ease: "easeInOut" }}
+              style={{ transformOrigin: "17px 9px" }}
+            >
+              <rect x="14" y="7" width="2" height="3" fill="#ea7f43" />
+              <rect x="19" y="7" width="2" height="3" fill="#ea7f43" />
+              <rect x="15" y="8" width="1" height="2" fill="#ffffff" />
+              <rect x="19" y="8" width="1" height="2" fill="#ffffff" />
+            </motion.g>
+
+            <rect x="13" y="10" width="9" height="3" fill="#ea7f43" />
+            <rect x="12" y="12" width="3" height="2" fill="#eadec9" />
+            <rect x="20" y="12" width="3" height="2" fill="#eadec9" />
+            <rect x="14" y="13" width="7" height="1" fill="#eadec9" />
+
+            <rect x="15" y="11" width="1" height="1" fill="#1b1210" />
+            <rect x="19" y="11" width="1" height="1" fill="#1b1210" />
+            <rect x="17" y="13" width="1" height="1" fill="#1b1210" />
+
+            {/* Cozy Sweater */}
+            <rect x="14" y="14" width="7" height="6" fill="#d8923a" />
+            <rect x="15" y="14" width="5" height="1" fill="#fffbcf" />
+            <rect x="16" y="16" width="3" height="3" fill="#3f2317" />
+
+            {/* Tiny glowing laptop */}
+            <rect x="12" y="17" width="4" height="2" fill="#9e9e9e" />
+            <rect x="13" y="19" width="3" height="1" fill="#757575" />
+            <motion.rect
+              animate={shouldReduceMotion ? undefined : { opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              x="13" y="17" width="2" height="1" fill="#fff176"
+            />
+          </motion.g>
+
+          {/* Tiny Guild Badge */}
+          <rect x="8" y="27" width="16" height="3" fill="#365D39" rx="1" />
+          <text 
+            x="16" 
+            y="29.2" 
+            fill="#fcfda1" 
+            fontSize="2.4" 
+            fontWeight="bold" 
+            fontFamily="'Courier New', Courier, monospace"
+            textAnchor="middle"
+          >
+            RONAN★
+          </text>
+        </svg>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// 3D Kinetic Typography Component for Founder Name
+function KineticFounderName({ name, isRonan }: { name: string; isRonan: boolean }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (!isRonan) {
+    return (
+      <h3 className="font-display text-5xl md:text-6xl font-bold tracking-tight text-warm-beige">
+        {name}
+      </h3>
+    );
+  }
+
+  const words = name.split(" ");
+
+  return (
+    <h3 
+      aria-label={name}
+      className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-warm-beige flex flex-wrap items-center gap-x-4 gap-y-1 select-none py-1"
+      style={{ transform: "translateZ(35px)", transformStyle: "preserve-3d" }}
+    >
+      {words.map((word, wordIdx) => (
+        <span key={`word-${wordIdx}`} className="inline-flex">
+          {word.split("").map((char, charIdx) => {
+            const index = wordIdx * 10 + charIdx;
+            return (
+              <motion.span
+                key={`char-${charIdx}`}
+                aria-hidden="true"
+                animate={shouldReduceMotion ? undefined : {
+                  y: [0, -3, 0],
+                  rotate: [0, (index % 2 === 0 ? 1.5 : -1.5), 0],
+                }}
+                transition={{
+                  duration: 2.2,
+                  repeat: Infinity,
+                  delay: index * 0.08,
+                  ease: "easeInOut",
+                }}
+                whileHover={shouldReduceMotion ? undefined : {
+                  y: -12,
+                  scale: 1.3,
+                  rotate: (index % 2 === 0 ? 7 : -7),
+                  color: "#ffb74d",
+                  transition: { type: "spring", stiffness: 450, damping: 12 },
+                }}
+                className="inline-block cursor-pointer transition-colors pixel-text-shadow hover:text-amber-orange"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {char}
+              </motion.span>
+            );
+          })}
+        </span>
+      ))}
+      <motion.span
+        animate={shouldReduceMotion ? undefined : { 
+          scale: [1, 1.25, 1], 
+          rotate: [0, 15, -15, 0],
+          color: ["#ea7f43", "#ffb74d", "#ea7f43"]
+        }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+        className="inline-block text-amber-orange text-2xl sm:text-3xl ml-1 select-none"
+        title="Guild Leader Star"
+      >
+        ✦
+      </motion.span>
+    </h3>
+  );
+}
 
 export default function Founder() {
   const foundersData = [
@@ -75,6 +315,7 @@ export default function Founder() {
 
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isCardHovered, setIsCardHovered] = useState(false);
+  const [mochiQuoteIdx, setMochiQuoteIdx] = useState(0);
   const shouldReduceMotion = useReducedMotion();
 
   // 3D Parallax Tilt for Founder Card
@@ -83,6 +324,13 @@ export default function Founder() {
 
   const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 220, damping: 22 });
   const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), { stiffness: 220, damping: 22 });
+
+  // Dynamic 3D Holographic Glare for Ronan's card
+  const holographicBackground = useTransform(
+    [mouseX, mouseY],
+    ([x, y]) =>
+      `radial-gradient(circle at ${((x as number) + 0.5) * 100}% ${((y as number) + 0.5) * 100}%, rgba(234, 127, 67, 0.22) 0%, rgba(255, 245, 157, 0.08) 35%, transparent 65%)`
+  );
 
   const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (shouldReduceMotion) return;
@@ -188,6 +436,14 @@ export default function Founder() {
               style={{ transform: "translateZ(-15px)" }}
             />
 
+            {/* Dynamic 3D Holographic Glare for Ronan's card */}
+            {activeFounder.id === "ronan" && !shouldReduceMotion && (
+              <motion.div
+                className="absolute inset-0 pointer-events-none z-10 mix-blend-screen"
+                style={{ background: holographicBackground }}
+              />
+            )}
+
             {/* Top corner pixel notches */}
             <div className="absolute top-1 left-1 w-2.5 h-2.5 bg-black" />
             <div className="absolute top-1 right-1 w-2.5 h-2.5 bg-black" />
@@ -206,7 +462,14 @@ export default function Founder() {
               >
                 
                 {/* Left Column: RPG Character Portrait Frame (3D Z-Layer 30px) */}
-                <div id="founder-portrait-col" className="md:col-span-4 flex justify-center" style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
+                <div id="founder-portrait-col" className="md:col-span-4 flex justify-center relative" style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
+                  {/* Mochi Fox Mascot Companion perched on Ronan's card */}
+                  {activeFounder.id === "ronan" && (
+                    <FounderMochiCompanion 
+                      speechIndex={mochiQuoteIdx} 
+                      onPoke={() => setMochiQuoteIdx((prev) => prev + 1)} 
+                    />
+                  )}
                   <div className="relative group w-48 h-48 md:w-full md:aspect-square">
                     {/* Visual Glow framing the picture */}
                     <div className="absolute inset-0 bg-amber-orange border-4 border-dashed border-black opacity-30 group-hover:opacity-60 transition-opacity duration-300" />
@@ -232,12 +495,21 @@ export default function Founder() {
                 {/* Right Column: Character Attributes & Bio Description (3D Z-Layer 20px) */}
                 <div id="founder-bio-col" className="md:col-span-8 space-y-6" style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }}>
                   <div className="space-y-2">
-                    <span className="font-pixel text-[10px] tracking-widest uppercase text-amber-orange flex items-center gap-1.5">
-                      <Award className="w-4 h-4 text-amber-orange" /> {activeFounder.role}
-                    </span>
-                    <h3 className="font-display text-5xl md:text-6xl font-bold tracking-tight text-warm-beige">
-                      {activeFounder.name}
-                    </h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-pixel text-[10px] tracking-widest uppercase text-amber-orange flex items-center gap-1.5 bg-cocoa-950 px-2.5 py-1 border border-amber-orange/40 rounded shadow-sm">
+                        <Award className="w-4 h-4 text-amber-orange animate-pulse" /> {activeFounder.role}
+                      </span>
+                      {activeFounder.id === "ronan" && (
+                        <motion.span 
+                          animate={shouldReduceMotion ? undefined : { scale: [1, 1.06, 1] }}
+                          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                          className="font-pixel text-[8px] bg-amber-orange text-cocoa-950 px-2 py-0.5 border border-black font-bold uppercase flex items-center gap-1 shadow-sm"
+                        >
+                          <Sparkles className="w-2.5 h-2.5" /> MOCHI COMPANION
+                        </motion.span>
+                      )}
+                    </div>
+                    <KineticFounderName name={activeFounder.name} isRonan={activeFounder.id === "ronan"} />
                   </div>
 
                   <div className="space-y-4 font-mono text-sm md:text-base">
@@ -259,13 +531,18 @@ export default function Founder() {
                   {/* Skills inventory layout row */}
                   <div id="founder-skills-row" className="flex flex-wrap gap-3 pt-2" style={{ transform: "translateZ(18px)" }}>
                     {activeFounder.skills.map((skill) => (
-                      <div
+                      <motion.div
                         key={skill.name}
-                        className="flex items-center gap-2 px-4 py-2 bg-cocoa-950 border-2 border-black text-sage-text hover:border-amber-orange hover:text-amber-orange transition-all duration-300 text-xs font-mono font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                        whileHover={shouldReduceMotion ? undefined : { scale: 1.08, y: -3, transition: { duration: 0.18 } }}
+                        className={`flex items-center gap-2 px-4 py-2 bg-cocoa-950 border-2 border-black transition-all duration-300 text-xs font-mono font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${
+                          activeFounder.id === "ronan"
+                            ? "text-warm-beige hover:border-amber-orange hover:text-amber-orange hover:shadow-[3px_3px_0px_0px_rgba(234,127,67,0.5)] cursor-pointer"
+                            : "text-sage-text hover:border-amber-orange hover:text-amber-orange"
+                        }`}
                       >
                         <span className="text-amber-orange">{skill.icon}</span>
                         <span>{skill.name}</span>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
