@@ -45,7 +45,7 @@ export default function Founder() {
       id: "aldrin",
       name: "Aldrin Miller Basalo",
       role: "Co-Founder / Software Devs Backend Expert",
-      image: "https://ui-avatars.com/api/?name=BE&background=ea7f43&color=201311&size=200",
+      image: "/aldrin.jpg",
       quote: "A beautiful campsite relies on the unseen machinery beneath. I write the backend logic and databases that keep Stackcamp running seamlessly.",
       bio: "Obsessed with creating robust databases, secure API endpoints, and making sure the camp's backend runs smoothly.",
       skills: [
