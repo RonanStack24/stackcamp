@@ -13,6 +13,7 @@ import Founder from "./components/Founder";
 import PixelForestBackground from "./components/PixelForestBackground";
 import JoinCampModal from "./components/JoinCampModal";
 import CommunityGuide from "./components/CommunityGuide";
+import CampfireCursor from "./components/CampfireCursor";
 
 interface SparkClick {
   id: number;
@@ -382,6 +383,9 @@ export default function App() {
       <AnimatePresence>
         {isOffline && <OfflineScreen key="offline-screen" />}
       </AnimatePresence>
+
+      {/* Cozy Pixel Torch & Ember Cursor */}
+      <CampfireCursor />
 
       <div className="relative min-h-screen bg-cocoa-950/75 text-warm-beige selection:bg-amber-orange/30 selection:text-amber-orange font-mono antialiased overflow-x-hidden">
       

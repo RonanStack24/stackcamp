@@ -27,7 +27,7 @@ function FounderMochiCompanion({ speechIndex, onPoke }: { speechIndex: number; o
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, y: -10 }}
       transition={{ duration: 0.3 }}
-      className="absolute -top-12 sm:-top-14 -right-2 sm:-right-4 z-40 flex flex-col items-end cursor-pointer select-none group"
+      className="absolute top-3 right-4 sm:top-5 sm:right-6 z-40 flex flex-col items-end cursor-pointer select-none group"
       onClick={onPoke}
       role="button"
       tabIndex={0}
