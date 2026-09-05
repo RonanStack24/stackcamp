@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 interface EmberParticle {
   id: number;
